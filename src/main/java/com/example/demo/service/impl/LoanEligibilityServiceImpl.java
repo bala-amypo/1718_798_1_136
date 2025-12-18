@@ -30,7 +30,7 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
         LoanRequest loan = loanRepo.findById(loanRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
 
-        FinancialProfile profile = profileRepo.findByUserId(
+        FinancialProfile profile = profileRepo.findByUser_Id(
                 loan.getUser().getId()
         );
 
