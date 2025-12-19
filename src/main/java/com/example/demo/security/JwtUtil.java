@@ -1,45 +1,83 @@
 package com.example.demo.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.Base64;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
     
-    private final String SECRET_KEY = "mySecretKeyForJwtTokenGenerationInLoanEligibilitySystem2025";
-    private final long VALIDITY = 3600000; // 1 hour
+    private final SecretKey secretKey;
+    private final long validityInMilliseconds;
+    
+    public JwtUtil(@Value("${jwt.secret}") String secret,
+                  @Value("${jwt.validity}") long validityInMs) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.validityInMilliseconds = validityInMs;
+    }
+    
+    // Default constructor for testing
+    public JwtUtil() {
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.validityInMilliseconds = 3600000; // 1 hour
+    }
     
     public String generateToken(Map<String, Object> claims, String subject) {
-        // Simple token generation for testing
-        String header = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}";
-        String payload = "{\"sub\":\"" + subject + "\",\"exp\":" + 
-                        (System.currentTimeMillis() + VALIDITY) + "}";
-        
-        String encodedHeader = Base64.getEncoder().encodeToString(header.getBytes());
-        String encodedPayload = Base64.getEncoder().encodeToString(payload.getBytes());
-        
-        return encodedHeader + "." + encodedPayload + ".signature";
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
     }
     
     public Map<String, Object> getAllClaims(String token) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", "test@example.com");
-        claims.put("role", "CUSTOMER");
-        return claims;
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
     
     public boolean validateToken(String token) {
-        return token != null && token.contains(".");
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     public String getEmail(String token) {
-        return "test@example.com";
+        return extractClaim(token, Claims::getSubject);
     }
     
     public String getRole(String token) {
-        return "CUSTOMER";
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+    
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+    
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
