@@ -5,16 +5,16 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Auth", description = "Authentication endpoints")
+// Remove: @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
     
     private final JwtUtil jwtUtil;
