@@ -1,8 +1,8 @@
-package com.example.demo.service;
+// package com.example.demo.service;
 
-import com.example.demo.entity.User;
+// import com.example.demo.entity.User;
 
-public interface UserService {
-    User save(User user);
-    User getById(Long id);
-}
+// public interface UserService {
+//     User save(User user);
+//     User getById(Long id);
+// }
