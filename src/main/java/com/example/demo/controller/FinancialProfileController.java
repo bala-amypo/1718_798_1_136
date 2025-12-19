@@ -1,26 +1,26 @@
-package com.example.demo.controller;
+// package com.example.demo.controller;
 
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.service.FinancialProfileService;
-import org.springframework.web.bind.annotation.*;
+// import com.example.demo.entity.FinancialProfile;
+// import com.example.demo.service.FinancialProfileService;
+// import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/financial-profile")
-public class FinancialProfileController {
+// @RestController
+// @RequestMapping("/financial-profile")
+// public class FinancialProfileController {
 
-    private final FinancialProfileService service;
+//     private final FinancialProfileService service;
 
-    public FinancialProfileController(FinancialProfileService service) {
-        this.service = service;
-    }
+//     public FinancialProfileController(FinancialProfileService service) {
+//         this.service = service;
+//     }
 
-    @PostMapping("/add")
-    public FinancialProfile addProfile(@RequestBody FinancialProfile profile) {
-        return service.save(profile);
-    }
+//     @PostMapping("/add")
+//     public FinancialProfile addProfile(@RequestBody FinancialProfile profile) {
+//         return service.save(profile);
+//     }
 
-    @GetMapping("/{id}")
-    public FinancialProfile getProfile(@PathVariable Long id) {
-        return service.getById(id);
-    }
-}
+//     @GetMapping("/{id}")
+//     public FinancialProfile getProfile(@PathVariable Long id) {
+//         return service.getById(id);
+//     }
+// }

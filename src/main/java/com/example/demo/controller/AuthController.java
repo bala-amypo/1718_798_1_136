@@ -1,18 +1,18 @@
-package com.example.demo.controller;
+// package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.*;
+// import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
+// @RestController
+// @RequestMapping("/auth")
+// public class AuthController {
 
-    @PostMapping("/login")
-    public String login() {
-        return "Login successful";
-    }
+//     @PostMapping("/login")
+//     public String login() {
+//         return "Login successful";
+//     }
 
-    @PostMapping("/register")
-    public String register() {
-        return "User registered successfully";
-    }
-}
+//     @PostMapping("/register")
+//     public String register() {
+//         return "User registered successfully";
+//     }
+// }
