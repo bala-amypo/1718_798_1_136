@@ -1,40 +1,24 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "risk_assessment_logs")
-public class RiskAssessmentLog {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RiskAssessmentLogDto {
     private Long id;
-    
-    @Column(name = "loan_request_id", nullable = false)
     private Long loanRequestId;
-    
-    @Column(name = "dti_ratio", nullable = false)
     private Double dtiRatio;
-    
-    @Column(name = "credit_check_status", nullable = false)
     private String creditCheckStatus;
-    
-    @Column(nullable = false)
     private LocalDateTime timestamp;
     
-    @PrePersist
-    protected void onCreate() {
-        timestamp = LocalDateTime.now();
-    }
-    
     // Constructors
-    public RiskAssessmentLog() {}
+    public RiskAssessmentLogDto() {}
     
-    public RiskAssessmentLog(Long loanRequestId, Double dtiRatio, String creditCheckStatus) {
+    public RiskAssessmentLogDto(Long id, Long loanRequestId, Double dtiRatio, 
+                               String creditCheckStatus, LocalDateTime timestamp) {
+        this.id = id;
         this.loanRequestId = loanRequestId;
         this.dtiRatio = dtiRatio;
         this.creditCheckStatus = creditCheckStatus;
+        this.timestamp = timestamp;
     }
     
     // Getters and Setters
