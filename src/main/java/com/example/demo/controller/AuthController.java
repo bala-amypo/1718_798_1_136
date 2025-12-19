@@ -7,9 +7,6 @@ import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
@@ -20,16 +17,13 @@ import java.util.Map;
 @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
     
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     
-    public AuthController(AuthenticationManager authenticationManager, 
-                         JwtUtil jwtUtil, 
+    public AuthController(JwtUtil jwtUtil, 
                          UserService userService,
                          PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -65,11 +59,12 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-        );
-        
         User user = userService.findByEmail(authRequest.getEmail());
+        
+        // Check password
+        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
         
         // Generate token
         Map<String, Object> claims = new HashMap<>();
