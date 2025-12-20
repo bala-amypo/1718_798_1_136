@@ -1,102 +1,44 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String secret;
-    private final long validityInMs;
     
-    public JwtUtil(
-            @Value("${jwt.secret:mySecretKey1234567890mySecretKey1234567890mySecretKey1234567890}") 
-            String secret,
-            @Value("${jwt.validity:86400000}") 
-            long validityInMs) {
-        
-        // Ensure secret is at least 256 bits (32 characters) for HS256
-        if (secret.length() < 32) {
-            // Pad or extend the secret
-            StringBuilder extendedSecret = new StringBuilder(secret);
-            while (extendedSecret.length() < 32) {
-                extendedSecret.append("0");
-            }
-            this.secret = extendedSecret.toString();
-        } else {
-            this.secret = secret;
-        }
-        
-        this.validityInMs = validityInMs;
-    }
+    @Value("${jwt.secret}")
+    private String secret;
+    
+    @Value("${jwt.validity:86400000}")
+    private long validity;
     
     public String generateToken(Long userId, String username, String role) {
-        Claims claims = Jwts.claims().setSubject(username);
+        Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("role", role);
         
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMs);
-        
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + validity))
+                .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .compact();
     }
     
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parser()
+                .setSigningKey(secret.getBytes())
+                .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
-    }
-    
-    public boolean validateToken(String token, String username) {
-        try {
-            String tokenUsername = getUsernameFromToken(token);
-            return (tokenUsername.equals(username) && !isTokenExpired(token));
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    
-    public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("userId", Long.class);
-    }
-    
-    public String getRoleFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("role", String.class);
-    }
-    
-    public String getUsernameFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-    
-    private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
-        return expiration.before(new Date());
     }
 }
