@@ -1,13 +1,13 @@
-// package com.example.demo.controller;
+package com.example.demo.controller;
 
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// @RestController
-// public class StatusController {
+@RestController
+public class StatusController {
     
-//     @GetMapping("/status")
-//     public String status() {
-//         return "Application is running";
-//     }
-// }
+    @GetMapping("/status")
+    public String status() {
+        return "Application is running";
+    }
+}
