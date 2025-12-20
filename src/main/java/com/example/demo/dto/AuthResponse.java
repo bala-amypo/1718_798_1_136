@@ -7,6 +7,9 @@ public class AuthResponse {
     private String role;
     private String fullName;
     
+    // Constructors
+    public AuthResponse() {}
+    
     public AuthResponse(String token, Long userId, String email, String role, String fullName) {
         this.token = token;
         this.userId = userId;
