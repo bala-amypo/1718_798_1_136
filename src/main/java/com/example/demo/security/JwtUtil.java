@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -13,11 +14,13 @@ public class JwtUtil {
     private final long validityInMs;
     
     public JwtUtil(
-            @Value("${jwt.secret:mySecretKey1234567890mySecretKey1234567890mySecretKey1234567890}") 
+            @Value("${jwt.secret:YW15cG9zZWNyZXRrZXk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk=}") 
             String secret,
             @Value("${jwt.validity:86400000}") 
             long validityInMs) {
-        this.secret = secret;
+        
+        // Decode the base64 secret
+        this.secret = Base64.getDecoder().decode(secret).toString();
         this.validityInMs = validityInMs;
     }
     
@@ -42,13 +45,18 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
+            System.err.println("JWT validation error: " + e.getMessage());
             return false;
         }
     }
     
     public boolean validateToken(String token, String username) {
-        String tokenUsername = getUsernameFromToken(token);
-        return (tokenUsername.equals(username) && !isTokenExpired(token));
+        try {
+            String tokenUsername = getUsernameFromToken(token);
+            return (tokenUsername.equals(username) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     public Long getUserIdFromToken(String token) {
