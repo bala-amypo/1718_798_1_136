@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FinancialProfileRepository extends JpaRepository<FinancialProfile, Long> {
     
-    // Must be exactly this name for tests
+    // Must be exactly this name for tests (findByUserld - with lowercase 'L')
     FinancialProfile findByUserld(Long userld);
 }

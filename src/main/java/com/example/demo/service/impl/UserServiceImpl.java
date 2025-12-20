@@ -17,10 +17,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(User user) {
         // Check if user already exists
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists: " + user.getEmail());
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
         }
         return userRepository.save(user);
+    }
+    
+    @Override
+    public User registerUser(User user) {
+        return register(user);
     }
     
     @Override
@@ -31,17 +36,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
     
     @Override
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+    
+    @Override
+    public User getUserById(Long id) {
+        return findById(id);
     }
     
     @Override
     public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.existsByEmail(email);
     }
 }
