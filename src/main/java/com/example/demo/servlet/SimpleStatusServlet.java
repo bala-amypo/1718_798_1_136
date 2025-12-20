@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = "/simple-status")
+@WebServlet("/status")
 public class SimpleStatusServlet extends HttpServlet {
     
     @Override

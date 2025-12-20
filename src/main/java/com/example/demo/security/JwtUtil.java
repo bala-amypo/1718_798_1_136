@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -14,13 +13,23 @@ public class JwtUtil {
     private final long validityInMs;
     
     public JwtUtil(
-            @Value("${jwt.secret:YW15cG9zZWNyZXRrZXk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk=}") 
+            @Value("${jwt.secret:mySecretKey1234567890mySecretKey1234567890mySecretKey1234567890}") 
             String secret,
             @Value("${jwt.validity:86400000}") 
             long validityInMs) {
         
-        // Decode the base64 secret
-        this.secret = Base64.getDecoder().decode(secret).toString();
+        // Ensure secret is at least 256 bits (32 characters) for HS256
+        if (secret.length() < 32) {
+            // Pad or extend the secret
+            StringBuilder extendedSecret = new StringBuilder(secret);
+            while (extendedSecret.length() < 32) {
+                extendedSecret.append("0");
+            }
+            this.secret = extendedSecret.toString();
+        } else {
+            this.secret = secret;
+        }
+        
         this.validityInMs = validityInMs;
     }
     
@@ -45,7 +54,6 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            System.err.println("JWT validation error: " + e.getMessage());
             return false;
         }
     }
