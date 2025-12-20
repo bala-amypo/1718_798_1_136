@@ -17,12 +17,19 @@ public class JwtUtil {
     private final long validityInMilliseconds;
     
     public JwtUtil(
-            @Value("${jwt.secret:default-secret-key-change-this-in-production-with-at-least-32-characters}") 
+            @Value("${jwt.secret:your-very-secret-key-change-this-in-production-minimum-32-characters}") 
             String secret,
             @Value("${jwt.validity:3600000}") 
             long validityInMs) {
-        // Use the provided secret or a default one
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        
+        // Ensure the secret is at least 32 characters
+        String actualSecret = secret;
+        if (secret.length() < 32) {
+            // Pad the secret if it's too short
+            actualSecret = String.format("%-32s", secret).substring(0, 32);
+        }
+        
+        this.secretKey = Keys.hmacShaKeyFor(actualSecret.getBytes());
         this.validityInMilliseconds = validityInMs;
     }
     
@@ -38,10 +45,7 @@ public class JwtUtil {
     
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token);
+            extractAllClaims(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -53,11 +57,18 @@ public class JwtUtil {
     }
     
     public String getRole(String token) {
-        return extractAllClaims(token).get("role", String.class);
+        Claims claims = extractAllClaims(token);
+        Object role = claims.get("role");
+        return role != null ? role.toString() : null;
     }
     
     public Long getUserId(String token) {
-        return extractAllClaims(token).get("userId", Long.class);
+        Claims claims = extractAllClaims(token);
+        Object userId = claims.get("userId");
+        if (userId instanceof Integer) {
+            return ((Integer) userId).longValue();
+        }
+        return userId != null ? Long.parseLong(userId.toString()) : null;
     }
     
     private Claims extractAllClaims(String token) {
