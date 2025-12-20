@@ -1,38 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.RiskAssessmentLogDto;
 import com.example.demo.entity.RiskAssessmentLog;
-import com.example.demo.service.RiskAssessmentService;
+import com.example.demo.service.RiskAssessmentLogService;  // Correct service name
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/risk-logs")
-@Tag(name = "RiskLog", description = "Risk Assessment log endpoints")
+@Tag(name = "Risk Logs", description = "Risk assessment log endpoints")
 public class RiskLogController {
     
-    private final RiskAssessmentService riskAssessmentService;
+    private final RiskAssessmentLogService riskAssessmentLogService;
     
-    public RiskLogController(RiskAssessmentService riskAssessmentService) {
-        this.riskAssessmentService = riskAssessmentService;
+    public RiskLogController(RiskAssessmentLogService riskAssessmentLogService) {
+        this.riskAssessmentLogService = riskAssessmentLogService;
     }
     
     @GetMapping("/{loanRequestId}")
-    public ResponseEntity<List<RiskAssessmentLogDto>> getByLoanRequestId(@PathVariable Long loanRequestId) {
-        // Note: getByLoanRequestId returns a single log, but keeping as list for consistency
-        RiskAssessmentLog log = riskAssessmentService.getByLoanRequestId(loanRequestId);
-        
-        List<RiskAssessmentLogDto> dtos = List.of(new RiskAssessmentLogDto(
-                log.getId(),
-                log.getLoanRequestId(),
-                log.getDtiRatio(),
-                log.getCreditCheckStatus(),
-                log.getTimestamp()
-        ));
-        
-        return ResponseEntity.ok(dtos);
+    @Operation(summary = "Get risk assessment logs by loan request ID")
+    public ResponseEntity<List<RiskAssessmentLog>> getLogsByRequest(@PathVariable Long loanRequestId) {
+        List<RiskAssessmentLog> logs = riskAssessmentLogService.getLogsByRequest(loanRequestId);
+        return ResponseEntity.ok(logs);
     }
 }

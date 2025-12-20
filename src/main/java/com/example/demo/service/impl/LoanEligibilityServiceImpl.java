@@ -31,7 +31,7 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("Loan request not found"));
         
-        // 2. Fetch financial profile (must use findByUserld)
+        // 2. Fetch financial profile
         FinancialProfile profile = financialProfileRepository.findByUserld(loanRequest.getUser().getId());
         if (profile == null) {
             throw new IllegalArgumentException("Financial profile not found");
@@ -46,6 +46,7 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
         double maxEligibleAmount = 0.0;
         String riskLevel = "LOW";
         String rejectionReason = null;
+        double estimatedEmi = 0.0;
         
         // Rule 1: DTI should be <= 40%
         if (dtiRatio > 40) {
@@ -68,7 +69,7 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
             rejectionReason = "Requested amount exceeds 24 months of income";
         }
         
-        // If eligible, calculate max amount
+        // If eligible, calculate max amount and EMI
         if (isEligible) {
             maxEligibleAmount = Math.min(
                 profile.getMonthlyIncome() * 24, // 24 months income
@@ -80,22 +81,23 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
             int tenure = loanRequest.getTenureMonths();
             double principal = loanRequest.getRequestedAmount();
             
-            double emi = principal * rate * Math.pow(1 + rate, tenure) / 
+            estimatedEmi = principal * rate * Math.pow(1 + rate, tenure) / 
                         (Math.pow(1 + rate, tenure) - 1);
             
             // Set risk level based on DTI
             if (dtiRatio > 30) {
                 riskLevel = "MEDIUM";
-            } else if (dtiRatio > 20) {
+            } else if (dtiRatio <= 20) {
                 riskLevel = "LOW";
             }
         }
         
-        // 5. Create EligibilityResult
+        // 5. Create EligibilityResult - FIXED METHOD NAME
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(loanRequest);
-        result.setEligible(isEligible);
+        result.setIsEligible(isEligible);  // FIXED: Changed from setEligible to setIsEligible
         result.setMaxEligibleAmount(maxEligibleAmount);
+        result.setEstimatedEmi(estimatedEmi);
         result.setRiskLevel(riskLevel);
         result.setRejectionReason(rejectionReason);
         result.setCalculatedAt(LocalDateTime.now());

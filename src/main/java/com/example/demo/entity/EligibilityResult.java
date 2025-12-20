@@ -12,19 +12,19 @@ public class EligibilityResult {
     private Long id;
     
     @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
+    @JoinColumn(name = "loan_request_id")
     private LoanRequest loanRequest;
     
-    @Column(name = "is_eligible", nullable = false)
-    private Boolean isEligible;
+    @Column(name = "is_eligible")
+    private Boolean isEligible;  // Field name
     
-    @Column(name = "max_eligible_amount", nullable = false)
+    @Column(name = "max_eligible_amount")
     private Double maxEligibleAmount;
     
-    @Column(name = "estimated_emi", nullable = false)
+    @Column(name = "estimated_emi")
     private Double estimatedEmi;
     
-    @Column(name = "risk_level", nullable = false)
+    @Column(name = "risk_level")
     private String riskLevel;
     
     @Column(name = "rejection_reason")
@@ -33,33 +33,15 @@ public class EligibilityResult {
     @Column(name = "calculated_at")
     private LocalDateTime calculatedAt;
     
-    @PrePersist
-    protected void onCreate() {
-        calculatedAt = LocalDateTime.now();
-    }
-    
-    // Constructors
-    public EligibilityResult() {}
-    
-    public EligibilityResult(LoanRequest loanRequest, Boolean isEligible, 
-                           Double maxEligibleAmount, Double estimatedEmi, 
-                           String riskLevel) {
-        this.loanRequest = loanRequest;
-        this.isEligible = isEligible;
-        this.maxEligibleAmount = maxEligibleAmount;
-        this.estimatedEmi = estimatedEmi;
-        this.riskLevel = riskLevel;
-    }
-    
-    // Getters and Setters
+    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
     public LoanRequest getLoanRequest() { return loanRequest; }
     public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
     
-    public Boolean getIsEligible() { return isEligible; }
-    public void setIsEligible(Boolean isEligible) { this.isEligible = isEligible; }
+    public Boolean getIsEligible() { return isEligible; }  // Getter
+    public void setIsEligible(Boolean isEligible) { this.isEligible = isEligible; }  // Setter
     
     public Double getMaxEligibleAmount() { return maxEligibleAmount; }
     public void setMaxEligibleAmount(Double maxEligibleAmount) { this.maxEligibleAmount = maxEligibleAmount; }
