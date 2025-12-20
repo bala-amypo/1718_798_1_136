@@ -7,6 +7,16 @@ public class LoanDtos {
         private Integer tenureMonths;
         private String purpose;
         
+        // No-arg constructor
+        public LoanRequestDto() {}
+        
+        // Constructor with fields
+        public LoanRequestDto(Double requestedAmount, Integer tenureMonths, String purpose) {
+            this.requestedAmount = requestedAmount;
+            this.tenureMonths = tenureMonths;
+            this.purpose = purpose;
+        }
+        
         // Getters and setters
         public Double getRequestedAmount() { return requestedAmount; }
         public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
@@ -22,6 +32,19 @@ public class LoanDtos {
         private Double existingLoanEmi;
         private Integer creditScore;
         private Double savingsBalance;
+        
+        // No-arg constructor
+        public FinancialProfileDto() {}
+        
+        // Constructor with fields
+        public FinancialProfileDto(Double monthlyIncome, Double monthlyExpenses, Double existingLoanEmi, 
+                                  Integer creditScore, Double savingsBalance) {
+            this.monthlyIncome = monthlyIncome;
+            this.monthlyExpenses = monthlyExpenses;
+            this.existingLoanEmi = existingLoanEmi;
+            this.creditScore = creditScore;
+            this.savingsBalance = savingsBalance;
+        }
         
         // Getters and setters
         public Double getMonthlyIncome() { return monthlyIncome; }
