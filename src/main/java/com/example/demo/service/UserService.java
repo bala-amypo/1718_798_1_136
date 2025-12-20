@@ -8,8 +8,6 @@ public interface UserService {
     User findByEmail(String email);
     User findById(Long id);
     boolean existsByEmail(String email);
-    
-    // Add these methods for test requirements
     User registerUser(User user);
     User getUserById(Long id);
 }

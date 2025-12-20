@@ -16,7 +16,6 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User register(User user) {
-        // Check if user already exists
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }

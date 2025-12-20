@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface LoanRequestRepository extends JpaRepository<LoanRequest, Long> {
-    
-    // Custom query to match the required method name 'findByUserid'
     @Query("SELECT lr FROM LoanRequest lr WHERE lr.user.id = :userid")
     List<LoanRequest> findByUserid(@Param("userid") Long userid);
 }

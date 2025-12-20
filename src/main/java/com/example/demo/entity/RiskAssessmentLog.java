@@ -14,42 +14,26 @@ public class RiskAssessmentLog {
     @Column(name = "loan_request_id", nullable = false)
     private Long loanRequestId;
     
-    @Column(name = "dti_ratio", nullable = false)
+    @Column(name = "dti_ratio")
     private Double dtiRatio;
     
-    @Column(name = "credit_check_status", nullable = false)
+    @Column(name = "credit_check_status")
     private String creditCheckStatus;
     
-    @Column(nullable = false)
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
     
-    @PrePersist
-    protected void onCreate() {
-        timestamp = LocalDateTime.now();
-    }
-    
-    // Constructors
     public RiskAssessmentLog() {}
     
-    public RiskAssessmentLog(Long loanRequestId, Double dtiRatio, String creditCheckStatus) {
-        this.loanRequestId = loanRequestId;
-        this.dtiRatio = dtiRatio;
-        this.creditCheckStatus = creditCheckStatus;
-    }
-    
-    // Getters and Setters
+    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    
     public Long getLoanRequestId() { return loanRequestId; }
     public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
-    
     public Double getDtiRatio() { return dtiRatio; }
     public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
-    
     public String getCreditCheckStatus() { return creditCheckStatus; }
     public void setCreditCheckStatus(String creditCheckStatus) { this.creditCheckStatus = creditCheckStatus; }
-    
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

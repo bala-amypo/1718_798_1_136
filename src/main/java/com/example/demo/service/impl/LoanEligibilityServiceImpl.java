@@ -27,64 +27,50 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
     
     @Override
     public EligibilityResult evaluateEligibility(Long loanRequestId) {
-        // 1. Fetch loan request
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("Loan request not found"));
         
-        // 2. Fetch financial profile
         FinancialProfile profile = financialProfileRepository.findByUserld(loanRequest.getUser().getId());
         if (profile == null) {
             throw new IllegalArgumentException("Financial profile not found");
         }
         
-        // 3. Calculate DTI
         double totalMonthlyObligations = profile.getMonthlyExpenses() + profile.getExistingLoanEmi();
         double dtiRatio = (totalMonthlyObligations / profile.getMonthlyIncome()) * 100;
         
-        // 4. Check eligibility criteria
         boolean isEligible = true;
         double maxEligibleAmount = 0.0;
         String riskLevel = "LOW";
         String rejectionReason = null;
         double estimatedEmi = 0.0;
         
-        // Rule 1: DTI should be <= 40%
         if (dtiRatio > 40) {
             isEligible = false;
             riskLevel = "HIGH";
             rejectionReason = "DTI ratio too high: " + String.format("%.2f", dtiRatio) + "%";
-        }
-        
-        // Rule 2: Credit score check
-        else if (profile.getCreditScore() < 650) {
+        } else if (profile.getCreditScore() < 650) {
             isEligible = false;
             riskLevel = "MEDIUM";
             rejectionReason = "Credit score too low: " + profile.getCreditScore();
-        }
-        
-        // Rule 3: Requested amount check
-        else if (loanRequest.getRequestedAmount() > (profile.getMonthlyIncome() * 24)) {
+        } else if (loanRequest.getRequestedAmount() > (profile.getMonthlyIncome() * 24)) {
             isEligible = false;
             riskLevel = "MEDIUM";
             rejectionReason = "Requested amount exceeds 24 months of income";
         }
         
-        // If eligible, calculate max amount and EMI
         if (isEligible) {
             maxEligibleAmount = Math.min(
-                profile.getMonthlyIncome() * 24, // 24 months income
-                profile.getSavingsBalance() * 10 // 10 times savings
+                profile.getMonthlyIncome() * 24,
+                profile.getSavingsBalance() * 10
             );
             
-            // Calculate estimated EMI
-            double rate = 0.12 / 12; // 12% annual, monthly
+            double rate = 0.12 / 12;
             int tenure = loanRequest.getTenureMonths();
             double principal = loanRequest.getRequestedAmount();
             
             estimatedEmi = principal * rate * Math.pow(1 + rate, tenure) / 
                         (Math.pow(1 + rate, tenure) - 1);
             
-            // Set risk level based on DTI
             if (dtiRatio > 30) {
                 riskLevel = "MEDIUM";
             } else if (dtiRatio <= 20) {
@@ -92,24 +78,21 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
             }
         }
         
-        // 5. Create EligibilityResult - FIXED METHOD NAME
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(loanRequest);
-        result.setIsEligible(isEligible);  // FIXED: Changed from setEligible to setIsEligible
+        result.setIsEligible(isEligible);
         result.setMaxEligibleAmount(maxEligibleAmount);
         result.setEstimatedEmi(estimatedEmi);
         result.setRiskLevel(riskLevel);
         result.setRejectionReason(rejectionReason);
         result.setCalculatedAt(LocalDateTime.now());
         
-        // 6. Create RiskAssessmentLog
         RiskAssessmentLog log = new RiskAssessmentLog();
         log.setLoanRequestId(loanRequestId);
         log.setDtiRatio(dtiRatio);
         log.setCreditCheckStatus(profile.getCreditScore() >= 650 ? "PASS" : "FAIL");
         log.setTimestamp(LocalDateTime.now());
         
-        // 7. Save results
         eligibilityResultRepository.save(result);
         riskAssessmentLogRepository.save(log);
         

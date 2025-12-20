@@ -4,6 +4,7 @@ import com.example.demo.entity.LoanRequest;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,16 +18,15 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     
     @Override
     public LoanRequest submitLoanRequest(LoanRequest request) {
-        // Validate amount > 0
         if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
             throw new IllegalArgumentException("Requested amount must be greater than 0");
         }
         
-        // Default status to PENDING if not set
         if (request.getStatus() == null || request.getStatus().isEmpty()) {
             request.setStatus("PENDING");
         }
         
+        request.setAppliedAt(LocalDateTime.now());
         return loanRequestRepository.save(request);
     }
     

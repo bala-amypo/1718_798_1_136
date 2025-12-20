@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EligibilityResultRepository extends JpaRepository<EligibilityResult, Long> {
-    
-    // Custom query to match the required method name 'findByLoanRequestid'
     @Query("SELECT er FROM EligibilityResult er WHERE er.loanRequest.id = :loanRequestid")
     EligibilityResult findByLoanRequestid(@Param("loanRequestid") Long loanRequestid);
 }
