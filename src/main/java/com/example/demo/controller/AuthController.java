@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     
     private final JwtUtil jwtUtil;
-    private final UserService userService;
+    private final UserService userService; // Use interface
     private final PasswordEncoder passwordEncoder;
     
     public AuthController(JwtUtil jwtUtil, 
-                         UserService userService,
+                         UserService userService, // Use interface
                          PasswordEncoder passwordEncoder) {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
@@ -43,16 +43,20 @@ public class AuthController {
             user.setRole("CUSTOMER");
         }
         
+        // Validate role
+        if (!user.getRole().equals("CUSTOMER") && !user.getRole().equals("ADMIN")) {
+            throw new IllegalArgumentException("Role must be either CUSTOMER or ADMIN");
+        }
+        
         // Check if user already exists
-        User existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser != null) {
+        if (userService.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
         
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         
-        User registeredUser = userService.save(user);
+        User registeredUser = userService.register(user);
         
         // Generate token
         String token = jwtUtil.generateToken(
