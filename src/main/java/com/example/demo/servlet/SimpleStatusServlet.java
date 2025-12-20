@@ -13,12 +13,11 @@ public class SimpleStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
-        
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         
         PrintWriter out = response.getWriter();
-        out.write("OK");  // Must be exactly "OK" (not "Application is running")
+        out.write("OK");
         out.flush();
     }
 }
