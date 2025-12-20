@@ -14,12 +14,9 @@ public class JwtUtil {
     private final String secret;
     private final long validityInMs;
     
-    // Constructor with @Value annotations
     public JwtUtil(
-            @Value("${jwt.secret:mySecretKeyForJWT12345678901234567890}") 
-            String secret,
-            @Value("${jwt.validity:86400000}") 
-            long validityInMs) {
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.validity}") long validityInMs) {
         this.secret = secret;
         this.validityInMs = validityInMs;
     }
