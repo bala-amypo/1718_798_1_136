@@ -9,12 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/auth")
-// Remove: @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
     
     private final JwtUtil jwtUtil;
@@ -31,20 +27,39 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody User user) {
+        // Validate required fields
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Full name is required");
+        }
+        
         // Default role to CUSTOMER if not specified
         if (user.getRole() == null || user.getRole().isEmpty()) {
             user.setRole("CUSTOMER");
         }
         
-        User registeredUser = userService.register(user);
+        // Check if user already exists
+        User existingUser = userService.findByEmail(user.getEmail());
+        if (existingUser != null) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        
+        // Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        User registeredUser = userService.save(user);
         
         // Generate token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", registeredUser.getEmail());
-        claims.put("role", registeredUser.getRole());
-        claims.put("userId", registeredUser.getId());
-        
-        String token = jwtUtil.generateToken(claims, registeredUser.getEmail());
+        String token = jwtUtil.generateToken(
+            registeredUser.getId(),
+            registeredUser.getEmail(),
+            registeredUser.getRole()
+        );
         
         AuthResponse response = new AuthResponse(
                 token,
@@ -59,20 +74,25 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        User user = userService.findByEmail(authRequest.getEmail());
+        // Validate required fields
+        if (authRequest.getEmail() == null || authRequest.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (authRequest.getPassword() == null || authRequest.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
         
-        // Check password
-        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+        User user = userService.findByEmail(authRequest.getEmail());
+        if (user == null || !passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
         }
         
         // Generate token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-        claims.put("userId", user.getId());
-        
-        String token = jwtUtil.generateToken(claims, user.getEmail());
+        String token = jwtUtil.generateToken(
+            user.getId(),
+            user.getEmail(),
+            user.getRole()
+        );
         
         AuthResponse response = new AuthResponse(
                 token,
