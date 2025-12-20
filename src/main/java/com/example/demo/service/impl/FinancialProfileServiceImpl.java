@@ -2,8 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.FinancialProfile;
 import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
@@ -12,45 +10,53 @@ import org.springframework.stereotype.Service;
 @Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
     
-    private final FinancialProfileRepository profileRepository;
+    private final FinancialProfileRepository financialProfileRepository;
     private final UserRepository userRepository;
     
-    public FinancialProfileServiceImpl(FinancialProfileRepository profileRepository, 
+    public FinancialProfileServiceImpl(FinancialProfileRepository financialProfileRepository,
                                       UserRepository userRepository) {
-        this.profileRepository = profileRepository;
+        this.financialProfileRepository = financialProfileRepository;
         this.userRepository = userRepository;
     }
     
     @Override
-    public FinancialProfile createOrUpdate(FinancialProfile profile) {
-        // Validate credit score
-        if (profile.getCreditScore() < 300 || profile.getCreditScore() > 900) {
-            throw new BadRequestException("creditScore must be between 300 and 900");
+    public FinancialProfile createOrUpdateProfile(FinancialProfile profile) {
+        // Validate user exists
+        if (profile.getUser() == null || profile.getUser().getId() == null) {
+            throw new IllegalArgumentException("User must be specified");
         }
         
-        // Validate monthly income
-        if (profile.getMonthlyIncome() <= 0) {
-            throw new BadRequestException("monthlyIncome must be greater than 0");
-        }
-        
-        // Check if user exists
         User user = userRepository.findById(profile.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
-        // Check for duplicate profile
+        // Check if profile already exists for this user (for create operation)
         if (profile.getId() == null) {
-            if (profileRepository.findByUserId(user.getId()).isPresent()) {
-                throw new BadRequestException("Financial profile already exists");
+            FinancialProfile existingProfile = financialProfileRepository.findByUserld(profile.getUser().getId());
+            if (existingProfile != null) {
+                throw new IllegalArgumentException("Financial profile already exists");
             }
         }
         
-        profile.setUser(user);
-        return profileRepository.save(profile);
+        // Validate credit score range
+        if (profile.getCreditScore() != null && 
+            (profile.getCreditScore() < 300 || profile.getCreditScore() > 900)) {
+            throw new IllegalArgumentException("Credit score must be between 300 and 900");
+        }
+        
+        // Validate monthly income
+        if (profile.getMonthlyIncome() != null && profile.getMonthlyIncome() <= 0) {
+            throw new IllegalArgumentException("Monthly income must be greater than 0");
+        }
+        
+        return financialProfileRepository.save(profile);
     }
     
     @Override
-    public FinancialProfile getByUserId(Long userId) {
-        return profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
+    public FinancialProfile getProfileByUser(Long userId) {
+        FinancialProfile profile = financialProfileRepository.findByUserld(userId);
+        if (profile == null) {
+            throw new IllegalArgumentException("Financial profile not found for user");
+        }
+        return profile;
     }
 }

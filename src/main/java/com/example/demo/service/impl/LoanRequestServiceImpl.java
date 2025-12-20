@@ -1,11 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.LoanRequestRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,43 +10,35 @@ import java.util.List;
 public class LoanRequestServiceImpl implements LoanRequestService {
     
     private final LoanRequestRepository loanRequestRepository;
-    private final UserRepository userRepository;
     
-    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository, 
-                                 UserRepository userRepository) {
+    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository) {
         this.loanRequestRepository = loanRequestRepository;
-        this.userRepository = userRepository;
     }
     
     @Override
-    public LoanRequest submitRequest(LoanRequest request) {
-        // Validate requested amount
-        if (request.getRequestedAmount() <= 0) {
-            throw new BadRequestException("Requested amount must be greater than 0");
+    public LoanRequest submitLoanRequest(LoanRequest request) {
+        // Validate amount > 0
+        if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
+            throw new IllegalArgumentException("Requested amount must be greater than 0");
         }
         
-        // Validate tenure
-        if (request.getTenureMonths() <= 0) {
-            throw new BadRequestException("Tenure months must be greater than 0");
+        // Default status to PENDING if not set
+        if (request.getStatus() == null || request.getStatus().isEmpty()) {
+            request.setStatus("PENDING");
         }
         
-        // Check if user exists
-        User user = userRepository.findById(request.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        request.setUser(user);
         return loanRequestRepository.save(request);
     }
     
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        return loanRequestRepository.findByUserId(userId);
+        return loanRequestRepository.findByUserid(userId);
     }
     
     @Override
-    public LoanRequest getById(Long id) {
+    public LoanRequest getRequestById(Long id) {
         return loanRequestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Loan request not found"));
     }
     
     @Override

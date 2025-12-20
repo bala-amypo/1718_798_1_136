@@ -5,7 +5,8 @@ import java.util.List;
 
 public interface LoanRequestService {
     
-    /**
+    /*
+        *
      * Submit a new loan request
      * @throws IllegalArgumentException if requestedAmount <= 0 with message containing "Requested amount"
      */

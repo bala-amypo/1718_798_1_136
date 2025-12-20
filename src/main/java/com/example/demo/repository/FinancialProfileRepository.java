@@ -2,8 +2,11 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.FinancialProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface FinancialProfileRepository extends JpaRepository<FinancialProfile, Long> {
-    Optional<FinancialProfile> findByUserId(Long userId);
+    
+    // Must be exactly this name for tests
+    FinancialProfile findByUserld(Long userld);
 }
