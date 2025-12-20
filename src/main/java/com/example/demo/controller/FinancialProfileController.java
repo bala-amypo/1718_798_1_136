@@ -21,15 +21,7 @@ public class FinancialProfileController {
     
     @PostMapping
     @Operation(summary = "Create or update financial profile")
-    public ResponseEntity<FinancialProfile> createOrUpdateProfile(@RequestBody FinancialProfileDto profileDto) {
-        // Create FinancialProfile from DTO
-        FinancialProfile profile = new FinancialProfile();
-        profile.setMonthlyIncome(profileDto.getMonthlyIncome());
-        profile.setMonthlyExpenses(profileDto.getMonthlyExpenses());
-        profile.setExistingLoanEmi(profileDto.getExistingLoanEmi());
-        profile.setCreditScore(profileDto.getCreditScore());
-        profile.setSavingsBalance(profileDto.getSavingsBalance());
-        
+    public ResponseEntity<FinancialProfile> createOrUpdateProfile(@RequestBody FinancialProfile profile) {
         FinancialProfile savedProfile = financialProfileService.createOrUpdateProfile(profile);
         return ResponseEntity.ok(savedProfile);
     }

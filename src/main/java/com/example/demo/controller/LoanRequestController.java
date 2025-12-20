@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +23,7 @@ public class LoanRequestController {
     
     @PostMapping
     @Operation(summary = "Submit a new loan request")
-    public ResponseEntity<LoanRequest> submitLoanRequest(@RequestBody LoanRequestDto loanRequestDto) {
-        // Create LoanRequest from DTO
-        LoanRequest loanRequest = new LoanRequest();
-        loanRequest.setRequestedAmount(loanRequestDto.getRequestedAmount());
-        loanRequest.setTenureMonths(loanRequestDto.getTenureMonths());
-        loanRequest.setPurpose(loanRequestDto.getPurpose());
-        
+    public ResponseEntity<LoanRequest> submitLoanRequest(@RequestBody LoanRequest loanRequest) {
         LoanRequest savedRequest = loanRequestService.submitLoanRequest(loanRequest);
         return ResponseEntity.ok(savedRequest);
     }

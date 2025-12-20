@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RiskAssessmentServiceImpl implements RiskAssessmentLogService {
+public class RiskAssessmentLogServiceImpl implements RiskAssessmentLogService {
     
     private final RiskAssessmentLogRepository riskAssessmentLogRepository;
     
-    public RiskAssessmentServiceImpl(RiskAssessmentLogRepository riskAssessmentLogRepository) {
+    public RiskAssessmentLogServiceImpl(RiskAssessmentLogRepository riskAssessmentLogRepository) {
         this.riskAssessmentLogRepository = riskAssessmentLogRepository;
     }
     
