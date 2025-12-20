@@ -3,6 +3,7 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +14,12 @@ public class JwtUtil {
     private final String secret;
     private final long validityInMs;
     
-    // Constructor must be exactly: public JwtUtil(String secret, long validityInMs)
-    public JwtUtil(String secret, long validityInMs) {
+    // Constructor with @Value annotations
+    public JwtUtil(
+            @Value("${jwt.secret:mySecretKeyForJWT12345678901234567890}") 
+            String secret,
+            @Value("${jwt.validity:86400000}") 
+            long validityInMs) {
         this.secret = secret;
         this.validityInMs = validityInMs;
     }
