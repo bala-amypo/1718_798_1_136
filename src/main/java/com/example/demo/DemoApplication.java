@@ -1,4 +1,3 @@
-// File: src/main/java/com/example/demo/DemoApplication.java
 package com.example.demo;
 
 import org.springframework.boot.SpringApplication;
@@ -16,6 +15,7 @@ public class DemoApplication {
     
     @Bean
     public ServletRegistrationBean<SimpleStatusServlet> simpleStatusServlet() {
-        return new ServletRegistrationBean<>(new SimpleStatusServlet(), "/simple-status");
+        // CHANGE FROM "/simple-status" TO "/status"
+        return new ServletRegistrationBean<>(new SimpleStatusServlet(), "/status");
     }
 }
