@@ -1,100 +1,65 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
+@CrossOrigin
 public class AuthController {
-    
-    private final JwtUtil jwtUtil;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-    
-    public AuthController(JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder) {
-        this.jwtUtil = jwtUtil;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
-    
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    /* ================= REGISTER ================= */
+
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody User user) {
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Full name is required");
-        }
-        
-        if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole("CUSTOMER");
-        }
-        
-        if (!user.getRole().equals("CUSTOMER") && !user.getRole().equals("ADMIN")) {
-            throw new IllegalArgumentException("Role must be either CUSTOMER or ADMIN");
-        }
-        
+    public LoanDtos.AuthResponse register(@RequestBody User user) {
+
         if (userService.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RuntimeException("Email already exists");
         }
-        
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User registeredUser = userService.register(user);
-        
-        String token = jwtUtil.generateToken(
-            registeredUser.getId(),
-            registeredUser.getEmail(),
-            registeredUser.getRole()
-        );
-        
-        AuthResponse response = new AuthResponse(
-                token,
-                registeredUser.getId(),
-                registeredUser.getEmail(),
-                registeredUser.getRole(),
-                registeredUser.getFullName()
-        );
-        
-        return ResponseEntity.ok(response);
+
+        user.setRole("USER");
+
+        User savedUser = userService.save(user);
+
+        String token = jwtUtil.generateToken(savedUser.getEmail());
+
+        LoanDtos.AuthResponse response =
+                new LoanDtos.AuthResponse();
+        response.setToken(token);
+        response.setFullName(savedUser.getFullName());
+
+        return response;
     }
-    
+
+    /* ================= LOGIN ================= */
+
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        if (authRequest.getEmail() == null || authRequest.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
+    public LoanDtos.AuthResponse login(@RequestBody LoanDtos.AuthRequest request) {
+
+        User user = userService.findByEmail(request.getEmail());
+
+        if (user == null) {
+            throw new RuntimeException("Invalid credentials");
         }
-        if (authRequest.getPassword() == null || authRequest.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        
-        User user = userService.findByEmail(authRequest.getEmail());
-        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials");
-        }
-        
-        String token = jwtUtil.generateToken(
-            user.getId(),
-            user.getEmail(),
-            user.getRole()
-        );
-        
-        AuthResponse response = new AuthResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole(),
-                user.getFullName()
-        );
-        
-        return ResponseEntity.ok(response);
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        LoanDtos.AuthResponse response =
+                new LoanDtos.AuthResponse();
+        response.setToken(token);
+        response.setFullName(user.getFullName());
+
+        return response;
     }
 }
