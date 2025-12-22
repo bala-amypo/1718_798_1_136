@@ -8,6 +8,8 @@ import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -23,10 +25,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
 
-        User user = userService.findByEmail(req.getEmail());
+        User user = userService.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtUtil.generateToken(
-                java.util.Map.of(
+                Map.of(
                         "email", user.getEmail(),
                         "role", user.getRole(),
                         "userId", user.getId()
@@ -34,8 +37,6 @@ public class AuthController {
                 user.getEmail()
         );
 
-        return ResponseEntity.ok(
-                new AuthResponse(token, user.getEmail())
-        );
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
