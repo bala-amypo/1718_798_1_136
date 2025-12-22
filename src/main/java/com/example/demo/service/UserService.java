@@ -4,9 +4,9 @@ import com.example.demo.entity.User;
 
 public interface UserService {
 
-    boolean existsByEmail(String email);
+    User register(User user);
+
+    User getById(Long id);
 
     User findByEmail(String email);
-
-    User save(User user);
 }

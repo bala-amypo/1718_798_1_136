@@ -1,65 +1,41 @@
 package com.example.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.dto.LoanDtos;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin
+@RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    /* ================= REGISTER ================= */
-
-    @PostMapping("/register")
-    public LoanDtos.AuthResponse register(@RequestBody User user) {
-
-        if (userService.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        user.setRole("USER");
-
-        User savedUser = userService.save(user);
-
-        String token = jwtUtil.generateToken(savedUser.getEmail());
-
-        LoanDtos.AuthResponse response =
-                new LoanDtos.AuthResponse();
-        response.setToken(token);
-        response.setFullName(savedUser.getFullName());
-
-        return response;
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
-    /* ================= LOGIN ================= */
-
     @PostMapping("/login")
-    public LoanDtos.AuthResponse login(@RequestBody LoanDtos.AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
 
-        User user = userService.findByEmail(request.getEmail());
+        User user = userService.findByEmail(req.getEmail());
 
-        if (user == null) {
-            throw new RuntimeException("Invalid credentials");
-        }
+        String token = jwtUtil.generateToken(
+                java.util.Map.of(
+                        "email", user.getEmail(),
+                        "role", user.getRole(),
+                        "userId", user.getId()
+                ),
+                user.getEmail()
+        );
 
-        String token = jwtUtil.generateToken(user.getEmail());
-
-        LoanDtos.AuthResponse response =
-                new LoanDtos.AuthResponse();
-        response.setToken(token);
-        response.setFullName(user.getFullName());
-
-        return response;
+        return ResponseEntity.ok(
+                new AuthResponse(token, user.getEmail())
+        );
     }
 }
