@@ -14,14 +14,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // REST API → no CSRF
             .csrf(csrf -> csrf.disable())
 
-            // Disable default login page
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // Allow Swagger & auth endpoints
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/v3/api-docs/**",
