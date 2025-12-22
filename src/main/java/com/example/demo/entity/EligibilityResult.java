@@ -13,6 +13,9 @@ public class EligibilityResult {
     private Boolean eligible;
 
     private Double emi;
+    private Double eligibleAmount;
+
+    private String riskLevel;
 
     private String reason;
 
@@ -41,6 +44,22 @@ public class EligibilityResult {
 
     public void setEmi(Double emi) {
         this.emi = emi;
+    }
+
+    public Double getEligibleAmount() {
+        return eligibleAmount;
+    }
+
+    public void setEligibleAmount(Double eligibleAmount) {
+        this.eligibleAmount = eligibleAmount;
+    }
+
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
     }
 
     public String getReason() {
