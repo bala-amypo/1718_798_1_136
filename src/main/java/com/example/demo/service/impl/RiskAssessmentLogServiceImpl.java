@@ -1,27 +1,24 @@
 package com.example.demo.service.impl;
 
+import org.springframework.stereotype.Service;
 import com.example.demo.entity.RiskAssessmentLog;
 import com.example.demo.repository.RiskAssessmentLogRepository;
-import com.example.demo.service.RiskAssessmentLogService;
-import org.springframework.stereotype.Service;
-import java.util.List;
+import com.example.demo.service.RiskAssessmentService;
 
 @Service
-public class RiskAssessmentLogServiceImpl implements RiskAssessmentLogService {
-    
-    private final RiskAssessmentLogRepository riskAssessmentLogRepository;
-    
-    public RiskAssessmentLogServiceImpl(RiskAssessmentLogRepository riskAssessmentLogRepository) {
-        this.riskAssessmentLogRepository = riskAssessmentLogRepository;
+public class RiskAssessmentServiceImpl implements RiskAssessmentService {
+
+    private final RiskAssessmentLogRepository repo;
+
+    public RiskAssessmentServiceImpl(RiskAssessmentLogRepository repo) {
+        this.repo = repo;
     }
-    
-    @Override
-    public RiskAssessmentLog logAssessment(RiskAssessmentLog log) {
-        return riskAssessmentLogRepository.save(log);
-    }
-    
-    @Override
-    public List<RiskAssessmentLog> getLogsByRequest(Long requestId) {
-        return riskAssessmentLogRepository.findByLoanRequestid(requestId);
+
+    public RiskAssessmentLog assessRisk(Long loanRequestId) {
+        RiskAssessmentLog log = new RiskAssessmentLog();
+        log.setLoanRequestId(loanRequestId);
+        log.setDtiRatio(0.3);
+        log.setStatus("APPROVED");
+        return repo.save(log);
     }
 }
