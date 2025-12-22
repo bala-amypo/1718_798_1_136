@@ -8,3 +8,7 @@ public interface UserRepository {
     Optional<User> findById(Long id);
     User save(User user);
 }
+public interface FinancialProfileRepository {
+    Optional<FinancialProfile> findByUserId(Long userId);
+    FinancialProfile save(FinancialProfile fp);
+}
