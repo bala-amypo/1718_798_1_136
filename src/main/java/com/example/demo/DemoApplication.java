@@ -15,7 +15,6 @@ public class DemoApplication {
     
     @Bean
     public ServletRegistrationBean<SimpleStatusServlet> simpleStatusServlet() {
-        // CHANGE FROM "/simple-status" TO "/status"
         return new ServletRegistrationBean<>(new SimpleStatusServlet(), "/status");
     }
 }
