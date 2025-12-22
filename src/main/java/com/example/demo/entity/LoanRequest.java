@@ -10,7 +10,8 @@ public class LoanRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double loanAmount;
+    @Column(name = "requested_amount")
+    private Double requestedAmount;
 
     private Integer tenureMonths;
 
@@ -25,16 +26,12 @@ public class LoanRequest {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Double getRequestedAmount() {
+        return requestedAmount;
     }
 
-    public Double getLoanAmount() {
-        return loanAmount;
-    }
-
-    public void setLoanAmount(Double loanAmount) {
-        this.loanAmount = loanAmount;
+    public void setRequestedAmount(Double requestedAmount) {
+        this.requestedAmount = requestedAmount;
     }
 
     public Integer getTenureMonths() {
