@@ -45,11 +45,10 @@ public class FinancialProfileController {
         LoanDtos.FinancialProfileDto dto =
                 new LoanDtos.FinancialProfileDto();
 
+        // ✅ ONLY setters that EXIST in FinancialProfileDto
         dto.setMonthlyIncome(profile.getMonthlyIncome());
         dto.setMonthlyExpenses(profile.getMonthlyExpenses());
-        dto.setExistingLoanEmi(profile.getExistingLoanEmi());
         dto.setCreditScore(profile.getCreditScore());
-        dto.setSavingsBalance(profile.getSavingsBalance());
 
         return ResponseEntity.ok(dto);
     }
