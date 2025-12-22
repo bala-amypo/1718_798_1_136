@@ -2,8 +2,6 @@ package com.example.demo.dto;
 
 public class LoanDtos {
 
-    /* ================= AUTH ================= */
-
     public static class AuthRequest {
         private String email;
         private String password;
@@ -26,8 +24,6 @@ public class LoanDtos {
         public void setFullName(String fullName) { this.fullName = fullName; }
     }
 
-    /* ================= FINANCIAL PROFILE ================= */
-
     public static class FinancialProfileDto {
         private Double monthlyIncome;
         private Double monthlyExpenses;
@@ -42,8 +38,6 @@ public class LoanDtos {
         public Integer getCreditScore() { return creditScore; }
         public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
     }
-
-    /* ================= LOAN REQUEST ================= */
 
     public static class LoanRequestDto {
         private Double requestedAmount;
