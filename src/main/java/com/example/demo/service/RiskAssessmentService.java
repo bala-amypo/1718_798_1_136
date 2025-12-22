@@ -1,13 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.RiskAssessmentLog;
-import java.util.List;
 
 public interface RiskAssessmentService {
 
-    RiskAssessmentLog assessRisk(Long loanRequestId);
-
-    RiskAssessmentLog save(RiskAssessmentLog log);
-
-    List<RiskAssessmentLog> getAll();
+    RiskAssessmentLog logRisk(Long userId, Double amount, String riskLevel);
 }
