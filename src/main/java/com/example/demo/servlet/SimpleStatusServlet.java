@@ -8,6 +8,6 @@ public class SimpleStatusServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/plain");
-        resp.getWriter().write("SimpleStatusServlet is running");
+        resp.getWriter().write("ok");
     }
 }
