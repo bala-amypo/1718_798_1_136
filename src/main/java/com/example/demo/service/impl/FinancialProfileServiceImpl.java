@@ -25,18 +25,14 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
-        // Check if user exists
         User user = userRepository.findById(profile.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        // Check if profile already exists for this user
         if (profile.getId() == null) {
             if (financialProfileRepository.findByUserId(user.getId()).isPresent()) {
                 throw new BadRequestException("Financial profile already exists");
             }
         }
         
-        // Simple validation
         if (profile.getCreditScore() < 300 || profile.getCreditScore() > 900) {
             throw new BadRequestException("Invalid creditScore");
         }

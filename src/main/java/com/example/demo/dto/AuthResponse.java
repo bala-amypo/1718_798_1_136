@@ -17,7 +17,6 @@ public class AuthResponse {
         this.fullName = fullName;
     }
     
-    // Getters and Setters
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
     

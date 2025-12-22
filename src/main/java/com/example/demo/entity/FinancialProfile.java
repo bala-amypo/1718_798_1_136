@@ -35,8 +35,7 @@ public class FinancialProfile {
         this.lastUpdatedAt = LocalDateTime.now();
     }
     
-    public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, 
-                           Integer creditScore, Double savingsBalance) {
+    public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, Integer creditScore, Double savingsBalance) {
         this.user = user;
         this.monthlyIncome = monthlyIncome;
         this.monthlyExpenses = monthlyExpenses;
@@ -45,7 +44,6 @@ public class FinancialProfile {
         this.lastUpdatedAt = LocalDateTime.now();
     }
     
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     

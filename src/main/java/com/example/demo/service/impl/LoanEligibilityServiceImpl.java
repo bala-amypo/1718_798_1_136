@@ -20,9 +20,8 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
     private final EligibilityResultRepository eligibilityResultRepository;
     
     @Autowired
-    public LoanEligibilityServiceImpl(LoanRequestRepository loanRequestRepository,
-                                     FinancialProfileRepository financialProfileRepository,
-                                     EligibilityResultRepository eligibilityResultRepository) {
+    public LoanEligibilityServiceImpl(LoanRequestRepository loanRequestRepository, FinancialProfileRepository financialProfileRepository,
+     EligibilityResultRepository eligibilityResultRepository) {
         this.loanRequestRepository = loanRequestRepository;
         this.financialProfileRepository = financialProfileRepository;
         this.eligibilityResultRepository = eligibilityResultRepository;
@@ -30,7 +29,6 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
     
     @Override
     public EligibilityResult evaluateEligibility(Long loanRequestId) {
-        // Check if already evaluated
         if (eligibilityResultRepository.findByLoanRequestId(loanRequestId).isPresent()) {
             throw new BadRequestException("Eligibility already evaluated");
         }
