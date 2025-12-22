@@ -4,7 +4,8 @@ import java.util.List;
 import com.example.demo.entity.LoanRequest;
 
 public interface LoanRequestService {
-    LoanRequest save(LoanRequest request);
+    LoanRequest submitRequest(LoanRequest request);
     LoanRequest getById(Long id);
-    List<LoanRequest> getAll();
+    List<LoanRequest> getAllRequests();
+    List<LoanRequest> getRequestsByUser(Long userId);
 }
