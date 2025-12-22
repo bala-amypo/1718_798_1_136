@@ -1,14 +1,25 @@
 package com.example.demo.entity;
 
 public class EligibilityResult {
-    private Long id;
-    private Double maxEligibleAmount;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    private LoanRequest loanRequest;
+    private boolean eligible;
+    private Double eligibleAmount;
+    private String riskLevel;
 
-    public Double getMaxEligibleAmount() {
-        if (maxEligibleAmount == null) return 0.0;
-        return maxEligibleAmount;
+    public void setLoanRequest(LoanRequest loanRequest) {
+        this.loanRequest = loanRequest;
+    }
+
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
+    }
+
+    public void setEligibleAmount(Double eligibleAmount) {
+        this.eligibleAmount = eligibleAmount;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
     }
 }

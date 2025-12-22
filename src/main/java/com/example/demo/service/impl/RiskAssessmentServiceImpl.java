@@ -1,11 +1,12 @@
 package com.example.demo.service.impl;
 
-import org.springframework.stereotype.Service;
 import com.example.demo.entity.RiskAssessmentLog;
 import com.example.demo.repository.RiskAssessmentLogRepository;
 import com.example.demo.service.RiskAssessmentService;
 
-@Service
+import java.util.ArrayList;
+import java.util.List;
+
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final RiskAssessmentLogRepository repo;
@@ -14,11 +15,13 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         this.repo = repo;
     }
 
-    public RiskAssessmentLog assessRisk(Long loanRequestId) {
-        RiskAssessmentLog log = new RiskAssessmentLog();
-        log.setLoanRequestId(loanRequestId);
-        log.setDtiRatio(0.3);
-        log.setStatus("APPROVED");
+    @Override
+    public RiskAssessmentLog save(RiskAssessmentLog log) {
         return repo.save(log);
+    }
+
+    @Override
+    public List<RiskAssessmentLog> getAll() {
+        return new ArrayList<>();
     }
 }

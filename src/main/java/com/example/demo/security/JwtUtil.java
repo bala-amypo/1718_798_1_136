@@ -5,6 +5,10 @@ import java.util.*;
 
 public class JwtUtil {
 
+public String generateToken(String subject) {
+    return generateToken(new java.util.HashMap<>(), subject);
+}
+
     private final String secret;
     private final long expiration;
 
