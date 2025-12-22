@@ -1,30 +1,64 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
 import com.example.demo.entity.LoanRequest;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
-
-    @Override
-    public LoanRequest submitLoanRequest(LoanRequest request) {
-        return request;
+    
+    private final LoanRequestRepository loanRequestRepository;
+    private final UserRepository userRepository;
+    
+    @Autowired
+    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository,
+                                 UserRepository userRepository) {
+        this.loanRequestRepository = loanRequestRepository;
+        this.userRepository = userRepository;
     }
-
+    
+    @Override
+    public LoanRequest submitRequest(LoanRequest request) {
+        // Check if user exists
+        User user = userRepository.findById(request.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        // Simple validation
+        if (request.getRequestedAmount() <= 0) {
+            throw new BadRequestException("Requested amount must be positive");
+        }
+        
+        if (request.getTenureMonths() <= 0) {
+            throw new BadRequestException("Tenure months must be positive");
+        }
+        
+        request.setUser(user);
+        return loanRequestRepository.save(request);
+    }
+    
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        return List.of();
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return loanRequestRepository.findByUserId(userId);
     }
-
+    
     @Override
-    public LoanRequest getRequestById(Long id) {
-        return null;
+    public LoanRequest getById(Long id) {
+        return loanRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
     }
-
+    
     @Override
     public List<LoanRequest> getAllRequests() {
-        return List.of();
+        return loanRequestRepository.findAll();
     }
 }

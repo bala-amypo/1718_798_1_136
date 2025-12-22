@@ -2,22 +2,25 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.RiskAssessmentLog;
 import com.example.demo.service.RiskAssessmentService;
-import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/risk")
+@RequestMapping("/api/risk-logs")
 public class RiskLogController {
-
-    private final RiskAssessmentService service;
-
-    public RiskLogController(RiskAssessmentService service) {
-        this.service = service;
+    
+    private final RiskAssessmentService riskAssessmentService;
+    
+    @Autowired
+    public RiskLogController(RiskAssessmentService riskAssessmentService) {
+        this.riskAssessmentService = riskAssessmentService;
     }
-
-    @Operation(summary = "Assess risk for a user")
-    @GetMapping("/{userId}")
-    public RiskAssessmentLog assessRisk(@PathVariable Long userId) {
-        return service.assessRisk(userId);
+    
+    @GetMapping("/{loanRequestId}")
+    public ResponseEntity<List<RiskAssessmentLog>> getRiskLogs(@PathVariable Long loanRequestId) {
+        List<RiskAssessmentLog> logs = riskAssessmentService.getByLoanRequestId(loanRequestId);
+        return ResponseEntity.ok(logs);
     }
 }

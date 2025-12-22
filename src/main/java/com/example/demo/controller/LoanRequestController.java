@@ -1,88 +1,82 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/loan")
-@CrossOrigin
+@RequestMapping("/api/loan-requests")
 public class LoanRequestController {
-
+    
+    private final LoanRequestService loanRequestService;
+    
     @Autowired
-    private LoanRequestService loanRequestService;
-
-
-    @PostMapping("/submit")
-    public LoanDtos.LoanRequestDto submitLoanRequest(
-            @RequestBody LoanRequest request) {
-
-        LoanRequest savedRequest = loanRequestService.submitLoanRequest(request);
-
-        LoanDtos.LoanRequestDto dto = new LoanDtos.LoanRequestDto();
-        dto.setRequestedAmount(savedRequest.getRequestedAmount());
-        dto.setTenureMonths(savedRequest.getTenureMonths());
-        dto.setStatus(savedRequest.getStatus());
-
-        return dto;
+    public LoanRequestController(LoanRequestService loanRequestService) {
+        this.loanRequestService = loanRequestService;
     }
-
+    
+    @PostMapping("/")
+    public ResponseEntity<LoanRequest> submitRequest(@RequestBody LoanRequest request) {
+        LoanRequest savedRequest = loanRequestService.submitRequest(request);
+        return ResponseEntity.ok(savedRequest);
+    }
+    
     @GetMapping("/user/{userId}")
-    public List<LoanDtos.LoanRequestDto> getLoansByUser(
-            @PathVariable Long userId) {
-
-        List<LoanRequest> requests =
-                loanRequestService.getRequestsByUser(userId);
-
-        return requests.stream().map(request -> {
-            LoanDtos.LoanRequestDto dto =
-                    new LoanDtos.LoanRequestDto();
-
+    public ResponseEntity<List<LoanDtos.LoanRequestDto>> getRequestsByUser(@PathVariable Long userId) {
+        List<LoanRequest> requests = loanRequestService.getRequestsByUser(userId);
+        
+        List<LoanDtos.LoanRequestDto> dtos = requests.stream().map(request -> {
+            LoanDtos.LoanRequestDto dto = new LoanDtos.LoanRequestDto();
+            dto.setId(request.getId());
+            dto.setUserId(request.getUser().getId());
             dto.setRequestedAmount(request.getRequestedAmount());
             dto.setTenureMonths(request.getTenureMonths());
+            dto.setPurpose(request.getPurpose());
             dto.setStatus(request.getStatus());
-
+            dto.setAppliedAt(request.getAppliedAt());
             return dto;
-        }).toList();
+        }).collect(Collectors.toList());
+        
+        return ResponseEntity.ok(dtos);
     }
-
+    
     @GetMapping("/{id}")
-    public LoanDtos.LoanRequestDto getLoanById(
-            @PathVariable Long id) {
-
-        LoanRequest request =
-                loanRequestService.getRequestById(id);
-
-        LoanDtos.LoanRequestDto dto =
-                new LoanDtos.LoanRequestDto();
-
+    public ResponseEntity<LoanDtos.LoanRequestDto> getById(@PathVariable Long id) {
+        LoanRequest request = loanRequestService.getById(id);
+        
+        LoanDtos.LoanRequestDto dto = new LoanDtos.LoanRequestDto();
+        dto.setId(request.getId());
+        dto.setUserId(request.getUser().getId());
         dto.setRequestedAmount(request.getRequestedAmount());
         dto.setTenureMonths(request.getTenureMonths());
+        dto.setPurpose(request.getPurpose());
         dto.setStatus(request.getStatus());
-
-        return dto;
+        dto.setAppliedAt(request.getAppliedAt());
+        
+        return ResponseEntity.ok(dto);
     }
-
-    @GetMapping("/all")
-    public List<LoanDtos.LoanRequestDto> getAllLoans() {
-
-        List<LoanRequest> requests =
-                loanRequestService.getAllRequests();
-
-        return requests.stream().map(request -> {
-            LoanDtos.LoanRequestDto dto =
-                    new LoanDtos.LoanRequestDto();
-
+    
+    @GetMapping("/")
+    public ResponseEntity<List<LoanDtos.LoanRequestDto>> getAllRequests() {
+        List<LoanRequest> requests = loanRequestService.getAllRequests();
+        
+        List<LoanDtos.LoanRequestDto> dtos = requests.stream().map(request -> {
+            LoanDtos.LoanRequestDto dto = new LoanDtos.LoanRequestDto();
+            dto.setId(request.getId());
+            dto.setUserId(request.getUser().getId());
             dto.setRequestedAmount(request.getRequestedAmount());
             dto.setTenureMonths(request.getTenureMonths());
+            dto.setPurpose(request.getPurpose());
             dto.setStatus(request.getStatus());
-
+            dto.setAppliedAt(request.getAppliedAt());
             return dto;
-        }).toList();
+        }).collect(Collectors.toList());
+        
+        return ResponseEntity.ok(dtos);
     }
 }
