@@ -4,10 +4,5 @@ import com.example.demo.entity.User;
 
 public interface UserService {
     User register(User user);
-    User save(User user);
-    User findByEmail(String email);
-    User findById(Long id);
-    boolean existsByEmail(String email);
-    User registerUser(User user);
-    User getUserById(Long id);
+    User login(String email, String password);
 }
