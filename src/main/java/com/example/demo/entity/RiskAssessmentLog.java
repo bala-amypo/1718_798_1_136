@@ -1,36 +1,53 @@
 package com.example.demo.entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "risk_assessment_log")
 public class RiskAssessmentLog {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long loanRequestId;
-    private Double riskScore;
+
+    private Long userId;
+
+    private Double amount;
+
     private String riskLevel;
-    private LocalDateTime createdAt;
 
     public RiskAssessmentLog() {
-        this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getLoanRequestId() { return loanRequestId; }
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
+    public Long getId() {
+        return id;
     }
 
-    public Double getRiskScore() { return riskScore; }
-    public void setRiskScore(Double riskScore) {
-        this.riskScore = riskScore;
+    public Long getUserId() {
+        return userId;
     }
 
-    public String getRiskLevel() { return riskLevel; }
+    public Double getAmount() {
+        return amount;
+    }
+
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
     public void setRiskLevel(String riskLevel) {
         this.riskLevel = riskLevel;
     }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }
