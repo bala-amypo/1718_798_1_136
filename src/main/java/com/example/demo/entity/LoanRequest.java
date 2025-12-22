@@ -11,6 +11,7 @@ public class LoanRequest {
 
     private Double requestedAmount;
     private Integer tenureMonths;
+    private String purpose;  
     private String status;
 
     @ManyToOne
@@ -21,6 +22,9 @@ public class LoanRequest {
 
     public Integer getTenureMonths() { return tenureMonths; }
     public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+
+    public String getPurpose() { return purpose; }
+    public void setPurpose(String purpose) { this.purpose = purpose; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

@@ -3,6 +3,10 @@ package com.example.demo.service;
 import com.example.demo.entity.User;
 
 public interface UserService {
-    User register(User user);
-    User login(String email, String password);
+
+    boolean existsByEmail(String email);
+
+    User findByEmail(String email);
+
+    User save(User user);
 }

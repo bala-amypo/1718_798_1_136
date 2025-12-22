@@ -12,6 +12,8 @@ public class FinancialProfile {
     private Double monthlyIncome;
     private Double monthlyExpenses;
     private Integer creditScore;
+    private Double existingLoanEmi;  
+    private Double savingsBalance;  
 
     @OneToOne
     private User user;
@@ -24,6 +26,12 @@ public class FinancialProfile {
 
     public Integer getCreditScore() { return creditScore; }
     public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+
+    public Double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
+
+    public Double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
