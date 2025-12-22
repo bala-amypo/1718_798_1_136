@@ -26,9 +26,8 @@ public class FinancialProfileController {
     
     @GetMapping("/user/{userId}")
     public ResponseEntity<LoanDtos.FinancialProfileDto> getByUserId(@PathVariable Long userId) {
-        FinancialProfile profile = financialProfileService.getByUserId(userId); // Fixed method name
-        
-        // Convert to DTO
+        FinancialProfile profile = financialProfileService.getByUserId(userId);
+
         LoanDtos.FinancialProfileDto dto = new LoanDtos.FinancialProfileDto();
         dto.setId(profile.getId());
         dto.setUserId(profile.getUser().getId());

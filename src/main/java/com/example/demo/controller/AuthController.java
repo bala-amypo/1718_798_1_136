@@ -27,16 +27,12 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        // Simplified authentication
         User user = userService.findByEmail(authRequest.getEmail());
-        
-        // In real app, check password with BCrypt
         String hashedPassword = "hashed_" + authRequest.getPassword();
         if (!user.getPassword().equals(hashedPassword)) {
             return ResponseEntity.status(401).build();
         }
         
-        // Create a simple token (in real app, use JWT)
         String token = "simple_token_" + user.getId();
         
         AuthResponse response = new AuthResponse(
