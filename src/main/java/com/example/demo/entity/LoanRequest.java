@@ -1,35 +1,63 @@
 package com.example.demo.entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "loan_requests")
 public class LoanRequest {
 
-    public enum Status { PENDING, APPROVED, REJECTED }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private User user;
-    private Double requestedAmount;
+
+    private Double loanAmount;
+
     private Integer tenureMonths;
+
+    private Double monthlyIncome;
+
     private String status;
-    private LocalDateTime submittedAt;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public LoanRequest() {
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Long getId() {
+        return id;
+    }
 
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+    public Double getLoanAmount() {
+        return loanAmount;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setLoanAmount(Double loanAmount) {
+        this.loanAmount = loanAmount;
+    }
 
-    public LocalDateTime getSubmittedAt() {
-        if (submittedAt == null) submittedAt = LocalDateTime.now();
-        return submittedAt;
+    public Integer getTenureMonths() {
+        return tenureMonths;
+    }
+
+    public void setTenureMonths(Integer tenureMonths) {
+        this.tenureMonths = tenureMonths;
+    }
+
+    public Double getMonthlyIncome() {
+        return monthlyIncome;
+    }
+
+    public void setMonthlyIncome(Double monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
