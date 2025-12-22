@@ -7,10 +7,12 @@ public class AuthResponse {
 
     public AuthResponse() {
     }
+
     public AuthResponse(String token, String email) {
         this.token = token;
         this.email = email;
     }
+
     public String getToken() {
         return token;
     }

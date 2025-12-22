@@ -37,6 +37,8 @@ public class AuthController {
                 user.getEmail()
         );
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(
+                new AuthResponse(token, user.getEmail())
+        );
     }
 }
