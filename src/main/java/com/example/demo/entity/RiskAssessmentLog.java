@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "risk_assessment_log")
 public class RiskAssessmentLog {
 
     @Id
@@ -11,14 +10,10 @@ public class RiskAssessmentLog {
     private Long id;
 
     private Long userId;
-
     private Double amount;
-
     private String riskLevel;
 
-    public RiskAssessmentLog() {
-    }
-
+    // getters & setters
     public Long getId() {
         return id;
     }
