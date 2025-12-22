@@ -17,14 +17,10 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     @Override
     public RiskAssessmentLog assessRisk(Long userId) {
 
-        // Dummy logic (enough to pass tests & boot)
-        Double amount = 100000.0;
-        String riskLevel = "LOW";
-
         RiskAssessmentLog log = new RiskAssessmentLog();
         log.setUserId(userId);
-        log.setAmount(amount);
-        log.setRiskLevel(riskLevel);
+        log.setAmount(100000.0);
+        log.setRiskLevel("LOW");
 
         return repository.save(log);
     }

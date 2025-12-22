@@ -4,5 +4,6 @@ import com.example.demo.entity.RiskAssessmentLog;
 
 public interface RiskAssessmentService {
 
-    RiskAssessmentLog logRisk(Long userId, Double amount, String riskLevel);
+    RiskAssessmentLog assessRisk(Long userId);
+
 }
