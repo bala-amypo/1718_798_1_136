@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,39 +13,26 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
+
+            // ❌ Disable default login page
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((req, res, ex1) -> {
-                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    res.setContentType("application/json");
-                    res.getWriter().write("""
-                        {
-                          "error": "Unauthorized",
-                          "message": "JWT token is missing or invalid"
-                        }
-                        """);
-                })
-                .accessDeniedHandler((req, res, ex1) -> {
-                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    res.setContentType("application/json");
-                    res.getWriter().write("""
-                        {
-                          "error": "Forbidden",
-                          "message": "You are not allowed to access this resource"
-                        }
-                        """);
-                })
-            )
+            // 🚨 DO NOT define exceptionHandling (this is key!)
+            // Let Spring Boot handle errors → Whitelabel
 
             .authorizeHttpRequests(auth -> auth
+                // 🔑 allow error controller
+                .requestMatchers("/error").permitAll()
+
+                // allow swagger
                 .requestMatchers(
                     "/swagger-ui/**",
                     "/swagger-ui.html",
-                    "/v3/api-docs/**",
-                    "/auth/**"
+                    "/v3/api-docs/**"
                 ).permitAll()
+
+                // everything else secured
                 .anyRequest().authenticated()
             );
 
