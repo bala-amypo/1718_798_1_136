@@ -16,6 +16,15 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
+    public RiskAssessmentLog assessRisk(Long loanRequestId) {
+        RiskAssessmentLog log = new RiskAssessmentLog();
+        log.setLoanRequestId(loanRequestId);
+        log.setRiskScore(0.5);
+        log.setRiskLevel("MEDIUM");
+        return repo.save(log);
+    }
+
+    @Override
     public RiskAssessmentLog save(RiskAssessmentLog log) {
         return repo.save(log);
     }
