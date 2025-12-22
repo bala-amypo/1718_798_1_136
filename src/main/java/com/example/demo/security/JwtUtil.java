@@ -1,22 +1,28 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.*;
+import java.util.*;
 
-import java.util.Date;
-
-@Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "secret123";
+    private final String secret;
+    private final long expiration;
 
-    public String generateToken(String subject) {
+    public JwtUtil(String secret, long expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
+
+    public String generateToken(Map<String,Object> claims, String subject) {
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+    }
+
+    public Claims getAllClaims(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 }
