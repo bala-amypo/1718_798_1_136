@@ -20,12 +20,10 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User register(User user) {
-        // Check if email already exists
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("Email already in use");
         }
         
-        // Simple password hashing (in real app, use BCrypt)
         String hashedPassword = "hashed_" + user.getPassword();
         user.setPassword(hashedPassword);
         

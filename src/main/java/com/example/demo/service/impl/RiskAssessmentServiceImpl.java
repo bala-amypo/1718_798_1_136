@@ -31,26 +31,22 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     
     @Override
     public RiskAssessmentLog assessRisk(Long loanRequestId) {
-        // Check if already assessed
+      
         List<RiskAssessmentLog> existingLogs = riskAssessmentLogRepository.findByLoanRequestId(loanRequestId);
         if (!existingLogs.isEmpty()) {
             throw new BadRequestException("Risk already assessed");
         }
         
-        // Get loan request
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
         
-        // Get financial profile
         FinancialProfile profile = financialProfileRepository.findByUserId(loanRequest.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
         
-        // Calculate DTI ratio
         Double totalMonthlyObligations = profile.getMonthlyExpenses() + 
                 (profile.getExistingLoanEmi() != null ? profile.getExistingLoanEmi() : 0.0);
         Double dtiRatio = totalMonthlyObligations / profile.getMonthlyIncome();
         
-        // Determine credit check status (simplified)
         String creditCheckStatus = "APPROVED";
         if (profile.getCreditScore() < 550) {
             creditCheckStatus = "REJECTED";
@@ -58,7 +54,6 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
             creditCheckStatus = "PENDING_REVIEW";
         }
         
-        // Create risk assessment log
         RiskAssessmentLog log = new RiskAssessmentLog();
         log.setLoanRequestId(loanRequestId);
         log.setDtiRatio(dtiRatio);

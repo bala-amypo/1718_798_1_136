@@ -26,11 +26,10 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     
     @Override
     public LoanRequest submitRequest(LoanRequest request) {
-        // Check if user exists
+    
         User user = userRepository.findById(request.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
-        // Simple validation
         if (request.getRequestedAmount() <= 0) {
             throw new BadRequestException("Requested amount must be positive");
         }

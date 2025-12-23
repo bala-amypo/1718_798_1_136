@@ -33,20 +33,16 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
             throw new BadRequestException("Eligibility already evaluated");
         }
         
-        // Get loan request
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
         
-        // Get financial profile
         FinancialProfile profile = financialProfileRepository.findByUserId(loanRequest.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
         
-        // Calculate DTI ratio
         Double totalMonthlyObligations = profile.getMonthlyExpenses() + 
                 (profile.getExistingLoanEmi() != null ? profile.getExistingLoanEmi() : 0.0);
         Double dtiRatio = totalMonthlyObligations / profile.getMonthlyIncome();
         
-        // Simple eligibility logic
         boolean isEligible = true;
         String rejectionReason = null;
         String riskLevel = "LOW";
@@ -63,15 +59,12 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
             riskLevel = "MEDIUM";
         }
         
-        // Calculate max eligible amount (simplified)
         Double maxEligibleAmount = isEligible ? 
                 Math.min(loanRequest.getRequestedAmount(), profile.getMonthlyIncome() * 12) : 0.0;
         
-        // Calculate estimated EMI (simplified)
         Double estimatedEmi = isEligible ? 
                 maxEligibleAmount / loanRequest.getTenureMonths() : 0.0;
         
-        // Create eligibility result
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(loanRequest);
         result.setIsEligible(isEligible);
