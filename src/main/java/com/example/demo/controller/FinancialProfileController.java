@@ -20,7 +20,7 @@ public class FinancialProfileController {
     
     @PostMapping("/")
     public ResponseEntity<FinancialProfile> createOrUpdate(@RequestBody FinancialProfile profile) {
-        FinancialProfile savedProfile = financialProfileService.createOrUpdate(profile); // Fixed method name
+        FinancialProfile savedProfile = financialProfileService.createOrUpdate(profile);
         return ResponseEntity.ok(savedProfile);
     }
     
