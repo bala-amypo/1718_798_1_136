@@ -11,13 +11,20 @@ import java.io.PrintWriter;
 @WebServlet("/status")
 public class SimpleStatusServlet extends HttpServlet {
     
+    // Make it public so tests can call it
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
         resp.setContentType("text/plain");
         PrintWriter out = resp.getWriter();
         out.println("SimpleStatusServlet is active and responding.");
         out.println("Timestamp: " + System.currentTimeMillis());
         out.flush();
+    }
+    
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException {
+        doGet(req, resp);
     }
 }

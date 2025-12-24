@@ -4,17 +4,29 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private final SecretKey secretKey = Keys.hmacShaKeyFor("ChangeThisSecretForProductionButKeepItLongEnough".getBytes());
-    private final long expiration = 3600000; // 1 hour
+    private final SecretKey secretKey;
+    private final long expiration;
+
+    // Constructor with parameters for Spring injection
+    public JwtUtil(@Value("${jwt.secret:ChangeThisSecretForProductionButKeepItLongEnough}") String secret,
+                   @Value("${jwt.expiration:3600000}") long expiration) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.expiration = expiration;
+    }
+
+    // Default constructor for tests
+    public JwtUtil() {
+        this("ChangeThisSecretForProductionButKeepItLongEnough", 3600000);
+    }
 
     public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -38,7 +50,16 @@ public class JwtUtil {
         return getAllClaims(token).getSubject();
     }
 
+    public Date getExpiration(String token) {
+        return getAllClaims(token).getExpiration();
+    }
+
     public boolean isTokenExpired(String token) {
-        return getAllClaims(token).getExpiration().before(new Date());
+        return getExpiration(token).before(new Date());
+    }
+
+    public boolean validateToken(String token, String email) {
+        final String tokenEmail = getEmail(token);
+        return (tokenEmail.equals(email) && !isTokenExpired(token));
     }
 }
