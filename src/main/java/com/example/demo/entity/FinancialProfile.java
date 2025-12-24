@@ -10,36 +10,21 @@ public class FinancialProfile {
     private Long id;
 
     private Long userId;
-    private double monthlyIncome;
-    private double existingLoanEmi;
+    private double income;
+    private double existingEmi;
+    private int creditScore;
 
     public FinancialProfile() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public Long getUserId() { return userId; }
+    public double getIncome() { return income; }
+    public double getExistingEmi() { return existingEmi; }
+    public int getCreditScore() { return creditScore; }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public double getExistingLoanEmi() {
-        return existingLoanEmi;
-    }
-
-    public void setExistingLoanEmi(double existingLoanEmi) {
-        this.existingLoanEmi = existingLoanEmi;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public void setIncome(double income) { this.income = income; }
+    public void setExistingEmi(double existingEmi) { this.existingEmi = existingEmi; }
+    public void setCreditScore(int creditScore) { this.creditScore = creditScore; }
 }
