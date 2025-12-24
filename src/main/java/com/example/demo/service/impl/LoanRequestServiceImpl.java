@@ -25,7 +25,6 @@ public class LoanRequestServiceImpl implements LoanRequestService {
             throw new BadRequestException("Requested amount");
         }
 
-        // Manually set for Test T28 compliance
         if (request.getSubmittedAt() == null) {
             request.setSubmittedAt(LocalDateTime.now());
         }

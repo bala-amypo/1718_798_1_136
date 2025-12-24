@@ -26,7 +26,6 @@ public class JwtFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    // Constructor for tests without UserDetailsService
     public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = null;
@@ -46,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 email = jwtUtil.getEmail(jwt);
             } catch (Exception e) {
-                // Invalid token, continue without authentication
+                
             }
         }
 
@@ -60,7 +59,6 @@ public class JwtFilter extends OncePerRequestFilter {
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } else {
-                        // For testing without UserDetailsService
                         UsernamePasswordAuthenticationToken authToken = 
                             new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -68,7 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (Exception e) {
-                // Token validation failed
+
             }
         }
         chain.doFilter(request, response);

@@ -23,8 +23,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         if (profile.getCreditScore() != null && (profile.getCreditScore() < 300 || profile.getCreditScore() > 900)) {
             throw new BadRequestException("creditScore");
         }
-
-        // Manually set for Test T29 compliance
+        
         profile.setLastUpdatedAt(LocalDateTime.now());
 
         return profileRepo.findByUserId(profile.getUser().getId())

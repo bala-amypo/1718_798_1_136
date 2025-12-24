@@ -16,14 +16,12 @@ public class JwtUtil {
     private final SecretKey secretKey;
     private final long expiration;
 
-    // Constructor with parameters for Spring injection
     public JwtUtil(@Value("${jwt.secret:ChangeThisSecretForProductionButKeepItLongEnough}") String secret,
                    @Value("${jwt.expiration:3600000}") long expiration) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiration = expiration;
     }
 
-    // Default constructor for tests
     public JwtUtil() {
         this("ChangeThisSecretForProductionButKeepItLongEnough", 3600000);
     }
