@@ -7,16 +7,7 @@ public class AuthResponse {
     private String role;
     private String fullName;
     
-    public AuthResponse() {}
-    
-    public AuthResponse(String token, Long userId, String email, String role, String fullName) {
-        this.token = token;
-        this.userId = userId;
-        this.email = email;
-        this.role = role;
-        this.fullName = fullName;
-    }
-    
+    // Getters and Setters
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
     
