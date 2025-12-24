@@ -1,24 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.EligibilityResult;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.LoanRequest;
+import com.example.demo.service.EligibilityResult;
+import com.example.demo.service.FinancialProfileService;
 import com.example.demo.service.LoanEligibilityService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/eligibility")
-@CrossOrigin
 public class EligibilityController {
 
-    private final LoanEligibilityService loanEligibilityService;
+    private final FinancialProfileService profileService;
+    private final LoanEligibilityService eligibilityService;
 
-    public EligibilityController(LoanEligibilityService loanEligibilityService) {
-        this.loanEligibilityService = loanEligibilityService;
+    public EligibilityController(FinancialProfileService profileService,
+                                 LoanEligibilityService eligibilityService) {
+        this.profileService = profileService;
+        this.eligibilityService = eligibilityService;
     }
 
-    @GetMapping("/{loanRequestId}")
-    public ResponseEntity<EligibilityResult> getEligibility(@PathVariable Long loanRequestId) {
-        EligibilityResult res = loanEligibilityService.evaluateEligibility(loanRequestId);
-        return ResponseEntity.ok(res);
+    @GetMapping("/{userId}")
+    public EligibilityResult check(@PathVariable Long userId) {
+        FinancialProfile fp = profileService.getByUserId(userId);
+        LoanRequest req = new LoanRequest();
+        return eligibilityService.evaluateEligibility(fp, req);
     }
 }
