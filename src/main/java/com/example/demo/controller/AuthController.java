@@ -44,4 +44,27 @@ public class AuthController {
         AuthResponse response = new AuthResponse(token, user.getEmail(), user.getId(), user.getRole());
         return ResponseEntity.ok(response);
     }
+    
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest authRequest) {
+        // Create a new user
+        User user = new User();
+        user.setEmail(authRequest.getEmail());
+        user.setPassword(authRequest.getPassword());
+        user.setFullName("New User"); // Default name
+        
+        User registeredUser = userService.register(user);
+        
+        // Generate token
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", registeredUser.getId());
+        claims.put("role", registeredUser.getRole());
+        claims.put("email", registeredUser.getEmail());
+
+        String token = jwtUtil.generateToken(claims, registeredUser.getEmail());
+        
+        AuthResponse response = new AuthResponse(token, registeredUser.getEmail(), 
+                registeredUser.getId(), registeredUser.getRole());
+        return ResponseEntity.ok(response);
+    }
 }
