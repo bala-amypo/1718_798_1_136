@@ -1,21 +1,33 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.service.LoanRequestService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/loan-request")
+@RequestMapping("/api/loan-requests")
 public class LoanRequestController {
+    private final LoanRequestService loanRequestService;
 
-    private final LoanRequestRepository repo;
-
-    public LoanRequestController(LoanRequestRepository repo) {
-        this.repo = repo;
+    public LoanRequestController(LoanRequestService loanRequestService) {
+        this.loanRequestService = loanRequestService;
     }
 
-    @PostMapping("/create")
-    public LoanRequest create(@RequestBody LoanRequest req) {
-        return repo.save(req);
+    @PostMapping("/")
+    public ResponseEntity<LoanRequest> submit(@RequestBody LoanRequest request) {
+        return ResponseEntity.ok(loanRequestService.submitRequest(request));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<LoanRequest>> getByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(loanRequestService.getRequestsByUser(userId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LoanRequest> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(loanRequestService.getById(id));
     }
 }

@@ -6,25 +6,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/profile")
-@CrossOrigin
+@RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
+    private final FinancialProfileService profileService;
 
-    private final FinancialProfileService financialProfileService;
-
-    public FinancialProfileController(FinancialProfileService financialProfileService) {
-        this.financialProfileService = financialProfileService;
+    public FinancialProfileController(FinancialProfileService profileService) {
+        this.profileService = profileService;
     }
 
     @PostMapping("/")
-    public ResponseEntity<FinancialProfile> createOrUpdate(@RequestBody FinancialProfile fp) {
-        FinancialProfile saved = financialProfileService.createOrUpdate(fp);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<FinancialProfile> createOrUpdate(@RequestBody FinancialProfile profile) {
+        return ResponseEntity.ok(profileService.createOrUpdate(profile));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<FinancialProfile> getByUser(@PathVariable Long userId) {
-        FinancialProfile fp = financialProfileService.getByUserId(userId);
-        return ResponseEntity.ok(fp);
+    public ResponseEntity<FinancialProfile> getByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(profileService.getByUserId(userId));
     }
 }
