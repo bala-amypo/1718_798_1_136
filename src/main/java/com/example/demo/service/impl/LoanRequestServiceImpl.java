@@ -4,6 +4,7 @@ import com.example.demo.entity.LoanRequest;
 import com.example.demo.repository.*;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.service.LoanRequestService;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class LoanRequestServiceImpl implements LoanRequestService {
@@ -20,6 +21,15 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
             throw new BadRequestException("Requested amount");
         }
+        
+        // MANUALLY SET FOR TEST COMPLIANCE (T28)
+        if (request.getSubmittedAt() == null) {
+            request.setSubmittedAt(LocalDateTime.now());
+        }
+        if (request.getStatus() == null) {
+            request.setStatus(LoanRequest.Status.PENDING.name());
+        }
+        
         return loanRepo.save(request);
     }
 
