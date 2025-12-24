@@ -22,7 +22,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtUtil jwtUtil() {
-        // Must match the long secret requirements for HS256
         return new JwtUtil("ChangeThisSecretForProductionButKeepItLongEnough", 3600000);
     }
 

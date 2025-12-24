@@ -14,7 +14,7 @@ public class RiskAssessment {
     private Long id;
     private Long loanRequestId;
     private Double dtiRatio;
-    private Double riskScore; // Used in Test t52
+    private Double riskScore;
     private String creditCheckStatus;
     private LocalDateTime timestamp;
 

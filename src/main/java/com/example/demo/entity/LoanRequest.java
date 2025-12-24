@@ -19,7 +19,7 @@ public class LoanRequest {
     private Integer tenureMonths;
     private String purpose;
     private String status = Status.PENDING.name();
-    private LocalDateTime submittedAt; // Required by Test t28
+    private LocalDateTime submittedAt;
 
     public enum Status { PENDING, APPROVED, REJECTED }
 

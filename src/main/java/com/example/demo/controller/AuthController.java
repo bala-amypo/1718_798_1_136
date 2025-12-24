@@ -44,7 +44,6 @@ public class AuthController {
             
             String token = jwtUtil.generateToken(claims, user.getEmail());
 
-            // FIX: Arguments passed match the @AllArgsConstructor in AuthResponse
             return ResponseEntity.ok(new AuthResponse(
                 token, 
                 user.getId(), 
