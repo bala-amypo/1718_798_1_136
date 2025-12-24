@@ -34,13 +34,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
-        User user = userRepository.findByEmail(req.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         if (encoder.matches(req.getPassword(), user.getPassword())) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("role", user.getRole());
-            claims.put("userId", user.getId());
+            claims.put("email", user.getEmail());
+            
             String token = jwtUtil.generateToken(claims, user.getEmail());
-            return ResponseEntity.ok(new AuthResponse(token, user.getId(), user.getEmail(), user.getRole(), user.getFullName()));
+
+            // FIX: Arguments passed match the @AllArgsConstructor in AuthResponse
+            return ResponseEntity.ok(new AuthResponse(
+                token, 
+                user.getId(), 
+                user.getEmail(), 
+                user.getRole(), 
+                user.getFullName()
+            ));
         }
         return ResponseEntity.status(401).build();
     }
