@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
+    
+    public enum Role {
+        ADMIN, CUSTOMER
+    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +25,29 @@ public class User {
     private String password;
     
     @Column(nullable = false)
-    private String role = "CUSTOMER";
+    private String role;
     
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
-    public User() {
-        this.createdAt = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (role == null) {
+            role = Role.CUSTOMER.name();
+        }
     }
+    
+    public User() {}
     
     public User(String fullName, String email, String password) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
-        this.createdAt = LocalDateTime.now();
+        this.role = Role.CUSTOMER.name();
     }
-
+    
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -50,6 +62,7 @@ public class User {
     
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public void setRole(Role role) { this.role = role.name(); }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

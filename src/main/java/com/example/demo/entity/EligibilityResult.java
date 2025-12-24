@@ -7,44 +7,44 @@ import java.time.LocalDateTime;
 @Table(name = "eligibility_results")
 public class EligibilityResult {
     
+    public enum RiskLevel {
+        LOW, MEDIUM, HIGH
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false)
+    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
     private LoanRequest loanRequest;
     
-    @Column(nullable = false)
+    @Column(name = "is_eligible", nullable = false)
     private Boolean isEligible;
     
-    @Column(nullable = false)
+    @Column(name = "max_eligible_amount", nullable = false)
     private Double maxEligibleAmount;
     
-    @Column(nullable = false)
+    @Column(name = "estimated_emi", nullable = false)
     private Double estimatedEmi;
     
-    @Column(nullable = false)
+    @Column(name = "risk_level", nullable = false)
     private String riskLevel;
     
+    @Column(name = "rejection_reason")
     private String rejectionReason;
     
+    @Column(name = "calculated_at")
     private LocalDateTime calculatedAt;
     
-    public EligibilityResult() {
-        this.calculatedAt = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        calculatedAt = LocalDateTime.now();
     }
     
-    public EligibilityResult(LoanRequest loanRequest, Boolean isEligible, 
-                            Double maxEligibleAmount, Double estimatedEmi, String riskLevel) {
-        this.loanRequest = loanRequest;
-        this.isEligible = isEligible;
-        this.maxEligibleAmount = maxEligibleAmount;
-        this.estimatedEmi = estimatedEmi;
-        this.riskLevel = riskLevel;
-        this.calculatedAt = LocalDateTime.now();
-    }
-
+    public EligibilityResult() {}
+    
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -62,6 +62,7 @@ public class EligibilityResult {
     
     public String getRiskLevel() { return riskLevel; }
     public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
+    public void setRiskLevel(RiskLevel riskLevel) { this.riskLevel = riskLevel.name(); }
     
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }

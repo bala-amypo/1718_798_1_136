@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 @Table(name = "loan_requests")
 public class LoanRequest {
     
+    public enum Status {
+        PENDING, APPROVED, REJECTED
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,30 +19,31 @@ public class LoanRequest {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
-    @Column(nullable = false)
+    @Column(name = "requested_amount", nullable = false)
     private Double requestedAmount;
     
-    @Column(nullable = false)
+    @Column(name = "tenure_months", nullable = false)
     private Integer tenureMonths;
     
     private String purpose;
     
     @Column(nullable = false)
-    private String status = "PENDING";
+    private String status;
     
-    private LocalDateTime appliedAt;
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt;
     
-    public LoanRequest() {
-        this.appliedAt = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        submittedAt = LocalDateTime.now();
+        if (status == null) {
+            status = Status.PENDING.name();
+        }
     }
     
-    public LoanRequest(User user, Double requestedAmount, Integer tenureMonths) {
-        this.user = user;
-        this.requestedAmount = requestedAmount;
-        this.tenureMonths = tenureMonths;
-        this.appliedAt = LocalDateTime.now();
-    }
+    public LoanRequest() {}
     
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -56,7 +61,8 @@ public class LoanRequest {
     
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public void setStatus(Status status) { this.status = status.name(); }
     
-    public LocalDateTime getAppliedAt() { return appliedAt; }
-    public void setAppliedAt(LocalDateTime appliedAt) { this.appliedAt = appliedAt; }
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
 }

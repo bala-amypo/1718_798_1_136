@@ -12,38 +12,36 @@ public class FinancialProfile {
     private Long id;
     
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
     
-    @Column(nullable = false)
+    @Column(name = "monthly_income", nullable = false)
     private Double monthlyIncome;
     
-    @Column(nullable = false)
+    @Column(name = "monthly_expenses", nullable = false)
     private Double monthlyExpenses;
     
-    private Double existingLoanEmi;
+    @Column(name = "existing_loan_emi")
+    private Double existingLoanEmi = 0.0;
     
-    @Column(nullable = false)
+    @Column(name = "credit_score", nullable = false)
     private Integer creditScore;
     
-    @Column(nullable = false)
-    private Double savingsBalance;
+    @Column(name = "savings_balance", nullable = false)
+    private Double savingsBalance = 0.0;
     
+    @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
     
-    public FinancialProfile() {
-        this.lastUpdatedAt = LocalDateTime.now();
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdatedAt = LocalDateTime.now();
     }
     
-    public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, Integer creditScore, Double savingsBalance) {
-        this.user = user;
-        this.monthlyIncome = monthlyIncome;
-        this.monthlyExpenses = monthlyExpenses;
-        this.creditScore = creditScore;
-        this.savingsBalance = savingsBalance;
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public FinancialProfile() {}
     
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -51,34 +49,19 @@ public class FinancialProfile {
     public void setUser(User user) { this.user = user; }
     
     public Double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(Double monthlyIncome) { 
-        this.monthlyIncome = monthlyIncome; 
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
     
     public Double getMonthlyExpenses() { return monthlyExpenses; }
-    public void setMonthlyExpenses(Double monthlyExpenses) { 
-        this.monthlyExpenses = monthlyExpenses;
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
     
     public Double getExistingLoanEmi() { return existingLoanEmi; }
-    public void setExistingLoanEmi(Double existingLoanEmi) { 
-        this.existingLoanEmi = existingLoanEmi;
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
     
     public Integer getCreditScore() { return creditScore; }
-    public void setCreditScore(Integer creditScore) { 
-        this.creditScore = creditScore;
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
     
     public Double getSavingsBalance() { return savingsBalance; }
-    public void setSavingsBalance(Double savingsBalance) { 
-        this.savingsBalance = savingsBalance;
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
+    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
     
     public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
     public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
