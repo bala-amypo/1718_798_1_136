@@ -3,12 +3,12 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoanDto;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/loan")
-@CrossOrigin
+@RequestMapping("/api/loan")
 public class LoanRequestController {
 
     private final LoanRequestService loanRequestService;
@@ -17,20 +17,26 @@ public class LoanRequestController {
         this.loanRequestService = loanRequestService;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<LoanRequest> createLoan(@RequestBody LoanDto dto) {
-        LoanRequest lr = loanRequestService.createLoanRequest(dto);
-        return ResponseEntity.ok(lr);
+    @PostMapping("/create")
+    public LoanRequest createLoan(@RequestBody LoanDto dto) {
+
+        LoanRequest request = new LoanRequest(
+                dto.getUserId(),
+                dto.getLoanAmount(),
+                dto.getInterestRate(),
+                dto.getTenureMonths()
+        );
+
+        return loanRequestService.create(request);
     }
 
-    @GetMapping("/{loanId}")
-    public ResponseEntity<LoanRequest> getLoan(@PathVariable Long loanId) {
-        LoanRequest lr = loanRequestService.getById(loanId);
-        return ResponseEntity.ok(lr);
+    @GetMapping("/{id}")
+    public LoanRequest getLoan(@PathVariable Long id) {
+        return loanRequestService.getById(id);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserLoans(@PathVariable Long userId) {
-        return ResponseEntity.ok(loanRequestService.getRequestsByUser(userId));
+    public List<LoanRequest> getLoansByUser(@PathVariable Long userId) {
+        return loanRequestService.getByUserId(userId);
     }
 }

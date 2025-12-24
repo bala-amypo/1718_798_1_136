@@ -1,28 +1,33 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
-    private final LoanRequestRepository repo;
+    private final LoanRequestRepository loanRequestRepository;
 
-    public LoanRequestServiceImpl(LoanRequestRepository repo) {
-        this.repo = repo;
+    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository) {
+        this.loanRequestRepository = loanRequestRepository;
     }
 
     @Override
-    public LoanRequest createLoanRequest(LoanRequest request) {
-        return repo.save(request);
+    public LoanRequest create(LoanRequest request) {
+        return loanRequestRepository.save(request);
     }
 
     @Override
-    public LoanRequest getLoanRequestById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan Request not found"));
+    public LoanRequest getById(Long id) {
+        return loanRequestRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<LoanRequest> getByUserId(Long userId) {
+        return loanRequestRepository.findByUserId(userId);
     }
 }
