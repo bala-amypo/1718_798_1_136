@@ -1,38 +1,19 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "loan_request")
-public class LoanRequest {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class LoanDto {
 
     private Long userId;
-
     private double loanAmount;
-
     private double interestRate;
-
     private int tenureMonths;
 
-    public LoanRequest() {}
+    public LoanDto() {}
 
-    public LoanRequest(Long userId, double loanAmount, double interestRate, int tenureMonths) {
+    public LoanDto(Long userId, double loanAmount, double interestRate, int tenureMonths) {
         this.userId = userId;
         this.loanAmount = loanAmount;
         this.interestRate = interestRate;
         this.tenureMonths = tenureMonths;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getUserId() {

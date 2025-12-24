@@ -17,4 +17,8 @@ public class RiskLogController {
     }
 
     @GetMapping("/{loanRequestId}")
-    public
+    public ResponseEntity<RiskAssessment> getRisk(@PathVariable Long loanRequestId) {
+        RiskAssessment r = riskAssessmentService.assessRisk(loanRequestId);
+        return ResponseEntity.ok(r);
+    }
+}
