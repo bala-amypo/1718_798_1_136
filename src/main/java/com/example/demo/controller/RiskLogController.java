@@ -1,22 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.RiskAssessmentLog;
-import com.example.demo.service.RiskAssessmentService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/risk")
+@RequestMapping("/api/risk-logs")
 public class RiskLogController {
 
-    private final RiskAssessmentService service;
-
-    public RiskLogController(RiskAssessmentService service) {
-        this.service = service;
-    }
-
-    @PostMapping("/check")
-    public RiskAssessmentLog check(@RequestBody LoanRequest request) {
-        return service.assessRisk(request);
+    @GetMapping
+    public String getRiskLogs() {
+        return "Risk logs endpoint - Not fully implemented in basic version";
     }
 }
