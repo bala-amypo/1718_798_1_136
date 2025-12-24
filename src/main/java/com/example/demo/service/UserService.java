@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 
+import java.util.Map;
+import java.util.Optional;
+
 public interface UserService {
 
-    User registerUser(String username, String password);
+    Optional<User> login(String username, String password);
 
-    String login(String username, String password);
+    User register(User user);
 
-    User getByUsername(String username);
+    Map<String, Object> createClaims(User user);
 }

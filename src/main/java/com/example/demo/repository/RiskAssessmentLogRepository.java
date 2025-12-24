@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.demo.entity.RiskAssessmentLog;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RiskAssessmentLogRepository extends JpaRepository<RiskAssessmentLog, Long> {
 }
