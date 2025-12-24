@@ -1,24 +1,26 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.RiskAssessment;
+import com.example.demo.entity.RiskAssessmentLog;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.RiskAssessmentService;
-import org.springframework.http.ResponseEntity;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/risk")
-@CrossOrigin
 public class RiskLogController {
 
-    private final RiskAssessmentService riskAssessmentService;
+    @Autowired
+    private RiskAssessmentService riskAssessmentService;
 
-    public RiskLogController(RiskAssessmentService riskAssessmentService) {
-        this.riskAssessmentService = riskAssessmentService;
-    }
+    @PostMapping("/assess")
+    public RiskAssessmentLog assessRisk(@RequestBody LoanRequest request) {
 
-    @GetMapping("/{loanRequestId}")
-    public ResponseEntity<RiskAssessment> getRisk(@PathVariable Long loanRequestId) {
-        RiskAssessment r = riskAssessmentService.assessRisk(loanRequestId);
-        return ResponseEntity.ok(r);
+        FinancialProfile profile = new FinancialProfile();
+        profile.setUserId(request.getUserId());
+
+        return riskAssessmentService.assessRisk(profile, request);
     }
 }
