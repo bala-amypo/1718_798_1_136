@@ -1,9 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.RiskAssessmentLog;
+import com.example.demo.entity.RiskAssessment;
 
 public interface RiskAssessmentService {
-
-    RiskAssessmentLog assessRisk(LoanRequest request);
+    RiskAssessment assessRisk(Long loanRequestId);
+    RiskAssessment getByLoanRequestId(Long loanRequestId);
 }
