@@ -16,9 +16,9 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
     private final FinancialProfileRepository financialProfileRepository;
     private final EligibilityResultRepository eligibilityResultRepository;
     
-    public EligibilityServiceImpl(LoanRequestRepository loanRequestRepository,
-                                 FinancialProfileRepository financialProfileRepository,
-                                 EligibilityResultRepository eligibilityResultRepository) {
+    public LoanEligibilityServiceImpl(LoanRequestRepository loanRequestRepository,
+                                     FinancialProfileRepository financialProfileRepository,
+                                     EligibilityResultRepository eligibilityResultRepository) {
         this.loanRequestRepository = loanRequestRepository;
         this.financialProfileRepository = financialProfileRepository;
         this.eligibilityResultRepository = eligibilityResultRepository;
@@ -64,7 +64,7 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
         result.setIsEligible(isEligible);
         result.setMaxEligibleAmount(maxEligibleAmount);
         result.setEstimatedEmi(estimatedEmi);
-        result.setRiskLevel(EligibilityResult.RiskLevel.valueOf(riskLevel));
+        result.setRiskLevel(riskLevel);
         
         if (!isEligible) {
             result.setRejectionReason("Insufficient eligibility based on income and credit score");
