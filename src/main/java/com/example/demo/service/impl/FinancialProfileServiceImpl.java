@@ -1,11 +1,14 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.FinancialProfile;
-import com.example.demo.repository.*;
+import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.service.FinancialProfileService;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
+@Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository profileRepo;
     private final UserRepository userRepo;
@@ -21,7 +24,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
             throw new BadRequestException("creditScore");
         }
 
-        // MANUALLY SET FOR TEST COMPLIANCE (T29)
+        // Manually set for Test T29 compliance
         profile.setLastUpdatedAt(LocalDateTime.now());
 
         return profileRepo.findByUserId(profile.getUser().getId())
@@ -30,6 +33,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
                     existing.setCreditScore(profile.getCreditScore());
                     existing.setSavingsBalance(profile.getSavingsBalance());
+                    existing.setExistingLoanEmi(profile.getExistingLoanEmi());
                     existing.setLastUpdatedAt(LocalDateTime.now());
                     return profileRepo.save(existing);
                 }).orElseGet(() -> profileRepo.save(profile));

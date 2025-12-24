@@ -1,12 +1,15 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.repository.*;
+import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.service.LoanRequestService;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class LoanRequestServiceImpl implements LoanRequestService {
     private final LoanRequestRepository loanRepo;
     private final UserRepository userRepo;
@@ -21,15 +24,15 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
             throw new BadRequestException("Requested amount");
         }
-        
-        // MANUALLY SET FOR TEST COMPLIANCE (T28)
+
+        // Manually set for Test T28 compliance
         if (request.getSubmittedAt() == null) {
             request.setSubmittedAt(LocalDateTime.now());
         }
         if (request.getStatus() == null) {
             request.setStatus(LoanRequest.Status.PENDING.name());
         }
-        
+
         return loanRepo.save(request);
     }
 
