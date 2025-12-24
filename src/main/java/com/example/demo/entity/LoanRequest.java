@@ -3,67 +3,25 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "loan_request")
 public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-
-    private double loanAmount;
-
-    private double interestRate;
-
-    private int tenureMonths;
+    private double requestedAmount;
 
     public LoanRequest() {}
-
-    public LoanRequest(Long userId, double loanAmount, double interestRate, int tenureMonths) {
-        this.userId = userId;
-        this.loanAmount = loanAmount;
-        this.interestRate = interestRate;
-        this.tenureMonths = tenureMonths;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public double getRequestedAmount() {
+        return requestedAmount;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public double getLoanAmount() {
-        return loanAmount;
-    }
-
-    public void setLoanAmount(double loanAmount) {
-        this.loanAmount = loanAmount;
-    }
-
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
-
-    public int getTenureMonths() {
-        return tenureMonths;
-    }
-
-    public void setTenureMonths(int tenureMonths) {
-        this.tenureMonths = tenureMonths;
+    public void setRequestedAmount(double requestedAmount) {
+        this.requestedAmount = requestedAmount;
     }
 }
