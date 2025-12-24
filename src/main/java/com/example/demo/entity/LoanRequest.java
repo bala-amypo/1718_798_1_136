@@ -1,35 +1,30 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "loan_requests")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoanRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @Column(nullable = false)
     private Double requestedAmount;
-
-    @Column(nullable = false)
     private Integer tenureMonths;
-
-    @Column(nullable = false)
+    private String purpose;
     private String status = Status.PENDING.name();
+    private LocalDateTime submittedAt; // Required by Test t28
 
-    @CreationTimestamp
-    private LocalDateTime submittedAt;
+    public enum Status { PENDING, APPROVED, REJECTED }
 
-    public enum Status {
-        PENDING, APPROVED, REJECTED, PROCESSING
+    @PrePersist
+    protected void onCreate() {
+        submittedAt = LocalDateTime.now();
     }
 }

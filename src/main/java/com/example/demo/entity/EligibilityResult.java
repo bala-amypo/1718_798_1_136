@@ -1,34 +1,28 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "eligibility_results")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EligibilityResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @OneToOne
-    @JoinColumn(name = "loan_request_id", unique = true, nullable = false)
     private LoanRequest loanRequest;
-
-    @Column(nullable = false)
     private Boolean isEligible;
-
-    @Column(nullable = false)
     private Double maxEligibleAmount;
-
-    @Column
-    private String reason;
-
-    @Column(nullable = false)
-    private Double suggestedEmi;
-
-    @CreationTimestamp
+    private Double estimatedEmi;
+    private String riskLevel;
+    private String rejectionReason;
     private LocalDateTime calculatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        calculatedAt = LocalDateTime.now();
+    }
 }

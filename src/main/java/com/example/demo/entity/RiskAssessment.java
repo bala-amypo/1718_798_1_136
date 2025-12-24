@@ -1,34 +1,25 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "risk_assessments")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RiskAssessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "loan_request_id", unique = true, nullable = false)
-    private LoanRequest loanRequest;
-
-    @Column(nullable = false)
-    private Double riskScore;
-
-    @Column(nullable = false)
-    private String riskLevel;
-
-    @Column(nullable = false)
+    private Long loanRequestId;
     private Double dtiRatio;
+    private Double riskScore; // Used in Test t52
+    private String creditCheckStatus;
+    private LocalDateTime timestamp;
 
-    @Column
-    private String recommendation;
-
-    @CreationTimestamp
-    private LocalDateTime assessedAt;
+    @PrePersist
+    protected void onCreate() {
+        timestamp = LocalDateTime.now();
+    }
 }
