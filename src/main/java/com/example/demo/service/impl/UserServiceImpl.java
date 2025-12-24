@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
@@ -10,38 +9,39 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
-    
+
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
-    
+
     @Override
-    public User register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new BadRequestException("Email already in use");
+    public User registerUser(String username, String password) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new RuntimeException("User already exists");
         }
-        
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRole() == null) {
-            user.setRole(User.Role.CUSTOMER);
-        }
-        
-        return userRepository.save(user);
+        User u = new User();
+        u.setUsername(username);
+        u.setPassword(encoder.encode(password));
+        return userRepository.save(u);
     }
-    
+
     @Override
-    public User getById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public String login(String username, String password) {
+        User u = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!encoder.matches(password, u.getPassword()))
+            throw new RuntimeException("Invalid credentials");
+
+        return "LOGIN_SUCCESS";
     }
-    
+
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
