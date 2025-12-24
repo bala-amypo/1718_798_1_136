@@ -4,23 +4,28 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "risk_assessment_log")
-public class RiskAssessmentLog {
+public class RiskAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
     private double riskScore;
 
+    @Column(nullable = false)
     private String riskLevel;
 
     private String notes;
 
-    public RiskAssessmentLog() {}
+    // Default constructor
+    public RiskAssessment() {}
 
-    public RiskAssessmentLog(Long userId, double riskScore, String riskLevel, String notes) {
+    // Parameterized constructor
+    public RiskAssessment(Long userId, double riskScore, String riskLevel, String notes) {
         this.userId = userId;
         this.riskScore = riskScore;
         this.riskLevel = riskLevel;
