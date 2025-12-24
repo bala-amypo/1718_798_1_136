@@ -1,36 +1,40 @@
-package com.example.demo.entity;
+package com.example.demo.service;
 
-import jakarta.persistence.*;
-
-@Entity
 public class EligibilityResult {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private boolean approved;
-    private double emi;
+    private boolean eligible;
+    private double approvedAmount;
+    private String message;
 
     public EligibilityResult() {}
 
-    public Long getId() {
-        return id;
+    public EligibilityResult(boolean eligible, double approvedAmount, String message) {
+        this.eligible = eligible;
+        this.approvedAmount = approvedAmount;
+        this.message = message;
     }
 
-    public boolean isApproved() {
-        return approved;
+    public boolean isEligible() {
+        return eligible;
     }
 
-    public void setApproved(boolean approved) {
-        this.approved = approved;
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
     }
 
-    public double getEmi() {
-        return emi;
+    public double getApprovedAmount() {
+        return approvedAmount;
     }
 
-    public void setEmi(double emi) {
-        this.emi = emi;
+    public void setApprovedAmount(double approvedAmount) {
+        this.approvedAmount = approvedAmount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
