@@ -1,38 +1,40 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "email")
+})
+@Data
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String password;
+    @Column(nullable = false)
     private String fullName;
-    private String role;
 
-    public User() {}
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    public User(String username, String password, String fullName, String role) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.role = role;
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private String role = Role.CUSTOMER.name();
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    public enum Role {
+        CUSTOMER, ADMIN
     }
-
-    public Long getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getFullName() { return fullName; }
-    public String getRole() { return role; }
-
-    public void setId(Long id) { this.id = id; }
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public void setRole(String role) { this.role = role; }
 }

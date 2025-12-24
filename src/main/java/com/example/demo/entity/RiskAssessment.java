@@ -6,9 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "eligibility_results")
+@Table(name = "risk_assessments")
 @Data
-public class EligibilityResult {
+public class RiskAssessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,17 +18,17 @@ public class EligibilityResult {
     private LoanRequest loanRequest;
 
     @Column(nullable = false)
-    private Boolean isEligible;
+    private Double riskScore;
 
     @Column(nullable = false)
-    private Double maxEligibleAmount;
+    private String riskLevel;
+
+    @Column(nullable = false)
+    private Double dtiRatio;
 
     @Column
-    private String reason;
-
-    @Column(nullable = false)
-    private Double suggestedEmi;
+    private String recommendation;
 
     @CreationTimestamp
-    private LocalDateTime calculatedAt;
+    private LocalDateTime assessedAt;
 }

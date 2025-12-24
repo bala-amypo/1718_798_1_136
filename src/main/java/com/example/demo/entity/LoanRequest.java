@@ -1,30 +1,35 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "loan_requests")
+@Data
 public class LoanRequest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-    private double loanAmount;
-    private double income;
-    private int duration;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public LoanRequest() {}
+    @Column(nullable = false)
+    private Double requestedAmount;
 
-    public Long getId() { return id; }
-    public Long getUserId() { return userId; }
-    public double getLoanAmount() { return loanAmount; }
-    public double getIncome() { return income; }
-    public int getDuration() { return duration; }
+    @Column(nullable = false)
+    private Integer tenureMonths;
 
-    public void setId(Long id) { this.id = id; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public void setLoanAmount(double loanAmount) { this.loanAmount = loanAmount; }
-    public void setIncome(double income) { this.income = income; }
-    public void setDuration(int duration) { this.duration = duration; }
+    @Column(nullable = false)
+    private String status = Status.PENDING.name();
+
+    @CreationTimestamp
+    private LocalDateTime submittedAt;
+
+    public enum Status {
+        PENDING, APPROVED, REJECTED, PROCESSING
+    }
 }

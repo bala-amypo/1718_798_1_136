@@ -1,30 +1,41 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "financial_profiles")
+@Data
 public class FinancialProfile {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-    private double income;
-    private double existingEmi;
-    private int creditScore;
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
+    private User user;
 
-    public FinancialProfile() {}
+    @Column(nullable = false)
+    private Double monthlyIncome;
 
-    public Long getId() { return id; }
-    public Long getUserId() { return userId; }
-    public double getIncome() { return income; }
-    public double getExistingEmi() { return existingEmi; }
-    public int getCreditScore() { return creditScore; }
+    @Column(nullable = false)
+    private Double monthlyExpenses;
 
-    public void setId(Long id) { this.id = id; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public void setIncome(double income) { this.income = income; }
-    public void setExistingEmi(double existingEmi) { this.existingEmi = existingEmi; }
-    public void setCreditScore(int creditScore) { this.creditScore = creditScore; }
+    @Column
+    private Double existingLoanEmi = 0.0;
+
+    @Column(nullable = false)
+    private Integer creditScore;
+
+    @Column(nullable = false)
+    private Double savingsBalance;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime lastUpdatedAt;
 }
