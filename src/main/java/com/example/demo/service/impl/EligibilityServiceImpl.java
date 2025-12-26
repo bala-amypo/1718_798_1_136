@@ -8,7 +8,7 @@ import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.EligibilityService;
 import com.example.demo.service.RiskAssessmentService;
-import com.example.demo.exception.BadRequestException
+import com.example.demo.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
