@@ -56,7 +56,8 @@ import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.EligibilityService;
 import com.example.demo.service.RiskAssessmentService;
-import org.springframework.beans.factory.annotation.Autowired; // ADD THIS
+import com.example.demo.exception.BadRequestException; // IMPORT THIS
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -66,10 +67,9 @@ public class EligibilityServiceImpl implements EligibilityService {
     private final FinancialProfileRepository profileRepo;
     private final EligibilityResultRepository resultRepo;
 
-    @Autowired // Spring will inject this automatically
+    @Autowired
     private RiskAssessmentService riskService; 
 
-    // Revert to 3-argument constructor to pass the COMPILATION test
     public EligibilityServiceImpl(LoanRequestRepository loanRepo, 
                                   FinancialProfileRepository profileRepo, 
                                   EligibilityResultRepository resultRepo) {
@@ -80,6 +80,11 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     @Override
     public EligibilityResult evaluateEligibility(Long loanRequestId) {
+        // FIX FOR t53: Check if eligibility result already exists
+        if (resultRepo.findByLoanRequestId(loanRequestId).isPresent()) {
+            throw new BadRequestException("Eligibility already evaluated");
+        }
+
         LoanRequest req = loanRepo.findById(loanRequestId).orElseThrow();
         FinancialProfile fp = profileRepo.findByUserId(req.getUser().getId()).orElseThrow();
 
@@ -91,9 +96,10 @@ public class EligibilityServiceImpl implements EligibilityService {
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(req);
         result.setMaxEligibleAmount(fp.getMonthlyIncome() * 12);
+        
+        // Basic eligibility rule: Credit Score >= 600
         result.setIsEligible(fp.getCreditScore() != null && fp.getCreditScore() >= 600);
         
-        // Use a safe calculation for EMI
         if (req.getTenureMonths() != null && req.getTenureMonths() > 0) {
             result.setEstimatedEmi(req.getRequestedAmount() / req.getTenureMonths());
         }
