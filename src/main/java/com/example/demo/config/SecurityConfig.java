@@ -22,7 +22,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtUtil jwtUtil() {
-        return new JwtUtil("", 3600000);
+        return new JwtUtil("nwewefijerfrejfnerjfnerfjefnrefneroferjoi", 3600000);
     }
 
     @Bean
